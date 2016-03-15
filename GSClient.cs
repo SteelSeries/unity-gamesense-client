@@ -34,10 +34,10 @@ namespace SteelSeries {
 
     namespace GameSense {
 
+        public class GSClient : MonoBehaviour {
+
 // only the following platforms are supported due to Unity player sandboxing
 #if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
-
-        public class GSClient : MonoBehaviour {
 
             // ******************** EDITOR VISIBLE  ********************
 
@@ -814,11 +814,14 @@ namespace SteelSeries {
 
                 _mMsgQueue.PEnqueue( msg );
             }
+
+#endif  // UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
+
         }
     }
 }
 
-#endif  // UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
+
 
 
 class LocklessQueue< T > {
