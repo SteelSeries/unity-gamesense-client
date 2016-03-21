@@ -36,9 +36,6 @@ namespace SteelSeries {
 
         public class GSClient : MonoBehaviour {
 
-// only the following platforms are supported due to Unity player sandboxing
-#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
-
             // ******************** EDITOR VISIBLE  ********************
 
             public string GameName;
@@ -280,7 +277,8 @@ namespace SteelSeries {
 #elif UNITY_STANDALONE_OSX
             private const string _ServerPropsPath = "/Library/Application Support/SteelSeries Engine 3/coreProps.json";
 #else
-#error Define server path for your platform
+#warning Define server path for your platform
+            private const string _ServerPropsPath = "";
 #endif
 
 
@@ -396,7 +394,7 @@ namespace SteelSeries {
 #elif UNITY_STANDALONE_OSX
                 return _ServerPropsPath;
 #else
-#error Return native filesystem path
+                return _ServerPropsPath;
 #endif
             }
 
@@ -660,6 +658,8 @@ namespace SteelSeries {
             // Initialization
             void Awake() {
 
+#if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
+
                 if ( _mInstance == null ) {
                     // update the static reference
                     _mInstance = this;
@@ -691,6 +691,9 @@ namespace SteelSeries {
                     _logException( "Could not start the client thread", e );
                     _setClientState( ClientState.Inactive );
                 }
+
+#endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
+
             }
 
 
@@ -728,6 +731,7 @@ namespace SteelSeries {
             /// <param name="displayName">The name that will appear in SteelSeries Engine for this game</param>
             /// <param name="iconColor">Color icon identifier that will appear for this game in SteelSeries Engine</param>
             public void RegisterGame( string name, string displayName, IconColor iconColor ) {
+#if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 GameName = name.ToUpper();
                 GameDisplayName = displayName;
                 IconColor = iconColor;
@@ -741,6 +745,7 @@ namespace SteelSeries {
                 msg.data = obj;
 
                 _mMsgQueue.PEnqueue( msg );
+#endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
             }
 
             /// <summary>
@@ -755,12 +760,14 @@ namespace SteelSeries {
             /// <param name="iconId">Identifies an icon that will be show in SteelSeries Engine for this event</param>
             /// <param name="handlers">An array of handlers for this event</param>
             public void BindEvent( string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId, AbstractHandler[] handlers ) {
+#if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActive() ) return;
 
                 QueueMsgBindEvent msg = new QueueMsgBindEvent();
                 msg.data = new Bind_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId, handlers );
 
                 _mMsgQueue.PEnqueue( msg );
+#endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
             }
 
             /// <summary>
@@ -775,12 +782,14 @@ namespace SteelSeries {
             /// <param name="maxValue">Maximum value</param>
             /// <param name="iconId">Identifies an icon that will be show in SteelSeries Engine for this event</param>
             public void RegisterEvent( string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId ) {
+#if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActive() ) return;
 
                 QueueMsgRegisterEvent msg = new QueueMsgRegisterEvent();
                 msg.data = new Register_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId );
 
                 _mMsgQueue.PEnqueue( msg );
+#endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
             }
 
             /// <summary>
@@ -789,6 +798,7 @@ namespace SteelSeries {
             /// <param name="eventName">Previously bound/registered event</param>
             /// <param name="value">New value</param>
             public void SendEvent( string eventName, System.Int32 value ) {
+#if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActive() ) return;
 
                 // TODO avoid mem allocations
@@ -801,21 +811,22 @@ namespace SteelSeries {
                 msg.data = se;
 
                 _mMsgQueue.PEnqueue( msg );
+#endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
             }
 
             /// <summary>
             /// Notifies the GameSense Server to remove the game and all registered events
             /// </summary>
             public void RemoveGame() {
+#if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActive() ) return;
 
                 QueueMsgRemoveGame msg = new QueueMsgRemoveGame();
                 msg.data = new Game( GameName );
 
                 _mMsgQueue.PEnqueue( msg );
+#endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
             }
-
-#endif  // UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
 
         }
     }

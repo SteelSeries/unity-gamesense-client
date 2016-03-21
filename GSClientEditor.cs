@@ -32,9 +32,6 @@ namespace SteelSeries {
 
     namespace GameSense {
 
-// only the following platforms are supported due to Unity player sandboxing
-#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
-
         // need this to support undo and redo ops in color editors
         class ColorPicker : UnityEngine.ScriptableObject {
             public UnityEngine.Color color;
@@ -187,8 +184,6 @@ namespace SteelSeries {
             }
 
         }
-
-#endif  // UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
 
     }
 
