@@ -181,7 +181,7 @@ namespace SteelSeries {
                 protected override FullSerializer.fsResult DoSerialize( Register_Game model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
                     // TODO check result of each
                     SerializeMember< string >( serialized, null, "game", model.game );
-                    SerializeMember< string >( serialized, null, "event", model.game_display_name );
+                    SerializeMember< string >( serialized, null, "game_display_name", model.game_display_name );
                     SerializeMember< System.UInt32 >( serialized, null, "icon_color_id", (System.UInt32)model.icon_color_id );
 
                     return FullSerializer.fsResult.Success;
