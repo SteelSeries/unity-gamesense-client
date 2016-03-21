@@ -166,9 +166,11 @@ SteelSeries.GameSense.GSClient.Instance.SendEvent("HEALTH", currentHealth);
 
 + Remember to bind your handlers for a particular event all at once. Any consecutive call to `BindEvent()` for the same event will override all previously bound handlers.
 
-+ The client will output warnings to Unity's console when something goes wrong. In case you wish to disable these warnings, you can define `SS_NWARN` symbol.
++ The client will output warnings to Unity's console when something goes wrong. In case you wish to disable these warnings, you can define `SS_NWARN` preprocessor directive.
 
-+ You can enable lots of debug output by defining `SS_DEBUG` symbol.
++ You can enable lots of debug output by defining `SS_DEBUG` preprocessor directive.
+
++ To statically disable the client, define `SS_GAMESENSE_DISABLED` preprocessor directive. This will effectively prevent the bodies of initialization routine and API functions from getting compiled.
 
 + In the event of a critical failure, such as when the client can't communicate with the GameSense™ server, the client assumes an inactive state, where all the API calls have no effect.
 
