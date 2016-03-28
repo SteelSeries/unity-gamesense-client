@@ -2,7 +2,7 @@
 All notable changes shall be documented in this file
 
 
-## [Unreleased]
+## [1.0.0] - 03-28-2016
 ### Changed
 - disabling GameSense on unsupported platforms (disabling Awake() and API functions)
 
@@ -13,6 +13,6 @@ All notable changes shall be documented in this file
 - serializing game_display_name field of Register_Game
 
 
-## [0.5.0] - 03-28-2016
+## [0.5.0] - 03-14-2016
 ### Added
 - initial release of the client
