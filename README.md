@@ -6,7 +6,7 @@ Visit [SteelSeries Techblog](http://techblog.steelseries.com/2015/06/29/introduc
 For more information about GameSense™ SDK, visit [SteelSeries Developer Portal](http://developer.steelseries.com/gamesense).
 
 # Installation
-Simply place the contents of this repository somewhere in your project's Assets directory, preferably inside `Assets\Scripts\GameSense`. The code will also be available from the Unity Asset Store soon.
+Simply place the contents of this repository somewhere in your project's Assets directory, preferably inside `Assets\Scripts\GameSense`. The client is also available on the [Unity Asset Store](https://www.assetstore.unity3d.com/#!/content/58312).
 
 The client relies on the presence of the SteelSeries Engine 3 (aka the GameSense™ server). You can download it from [here](https://steelseries.com/engine).
 
