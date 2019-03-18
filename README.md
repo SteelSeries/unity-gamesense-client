@@ -4,7 +4,7 @@ GameSense™ Client for Unity Engine simplifies the process of integrating GameS
 ## More info
 * [GameSense Developer Portal](https://steelseries.com/developer)
 * [GameSense SDK documentation](https://github.com/SteelSeries/gamesense-sdk)
-* [Unreal Engine 4 plugin](https://github.com/SteelSeries/gamesense-sdk)
+* [Unreal Engine 4 plugin](https://github.com/SteelSeries/gamesense-plugin-ue4)
 
 # Installation
 Simply place the contents of this repository somewhere in your project's Assets directory, preferably inside `Assets\Scripts\GameSense`. The code will also be available from the Unity Asset Store soon.
