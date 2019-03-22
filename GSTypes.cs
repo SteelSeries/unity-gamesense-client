@@ -67,11 +67,6 @@ namespace SteelSeries {
         }
 
 
-        [System.Serializable] public struct EventData {
-            public System.Int32 value;
-        }
-
-
 
 
         // ******************** RATE ********************
@@ -177,6 +172,11 @@ namespace SteelSeries {
             }
 
 
+            class ScreenZone {
+                public const string One = "one";
+            }
+
+
             abstract public class AbstractDevice_Zone : UnityEngine.ScriptableObject {
                 protected string _device;
                 public string device { get { return _device; } }
@@ -234,6 +234,27 @@ namespace SteelSeries {
                 protected string _zone;
                 public string zone { get { return _zone; } }
                 public AbstarctGenericTactile_Zone( string device, string zone ) : base( device ) { _zone = zone; }
+            }
+
+
+            abstract public class AbstractScreenDevice_Zone : AbstractDevice_Zone {
+                public AbstractScreenDevice_Zone( string device ) : base( device ) { }
+            }
+
+            // screen generic
+            public class AbstractGenericScreen_Zone : AbstractScreenDevice_Zone {
+                protected string _zone;
+                public string zone { get { return _zone; } }
+                public AbstractGenericScreen_Zone( string device, string zone ) : base( device ) { _zone = zone; }
+            }
+
+            public class SpecificScreen_Zone : AbstractGenericScreen_Zone {
+                protected System.UInt32 _width;
+                protected System.UInt32 _height;
+                public System.UInt32 width { get { return _width; } }
+                public System.UInt32 height { get { return _height; } }
+                public SpecificScreen_Zone( System.UInt32 width, System.UInt32 height, string zone ) :
+                    base( string.Format( "screened-{0}x{1}", width, height ), zone ) { _width = width; _height = height; }
             }
 
 
@@ -304,6 +325,7 @@ namespace SteelSeries {
         public abstract class AbstractColor : UnityEngine.ScriptableObject {
             public abstract ColorEffect ColorEffectType();
         }
+
         public abstract class AbstractColor_Nonrecursive : AbstractColor { }
 
 
@@ -607,6 +629,13 @@ namespace SteelSeries {
         }
 
         public abstract class TactilePattern_Nonrecursive: AbstractTactilePattern { }
+
+
+
+
+        // ******************** EVENT DATA ********************
+
+        public abstract class AbstractContextFrame { }
 
     }
 

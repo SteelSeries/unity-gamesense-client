@@ -806,6 +806,32 @@ namespace SteelSeries {
                 se.game = GameName;
                 se.event_name = eventName.ToUpper();
                 se.data.value = value;
+                se.data.frame = null;
+
+                QueueMsgSendEvent msg = new QueueMsgSendEvent();
+                msg.data = se;
+
+                _mMsgQueue.PEnqueue( msg );
+#endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
+            }
+
+            /// <summary>
+            /// Sends a new value for the specified event to the GameSense Server.
+            /// TODO modify the above and remove this one
+            /// </summary>
+            /// <param name="eventName">Previously bound/registered event</param>
+            /// <param name="value">New value</param>
+            /// <param name="frame"></param>
+            public void SendEvent( string eventName, System.Int32 value, AbstractContextFrame frame ) {
+#if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
+                if ( !_isClientActive() ) return;
+
+                // TODO avoid mem allocations
+                Send_Event se = new Send_Event();
+                se.game = GameName;
+                se.event_name = eventName.ToUpper();
+                se.data.value = value;
+                se.data.frame = frame;
 
                 QueueMsgSendEvent msg = new QueueMsgSendEvent();
                 msg.data = se;
