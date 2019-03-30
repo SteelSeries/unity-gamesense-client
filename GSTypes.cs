@@ -628,7 +628,7 @@ namespace SteelSeries {
 
         }
 
-        public abstract class TactilePattern_Nonrecursive: AbstractTactilePattern { }
+        public abstract class TactilePattern_Nonrecursive : AbstractTactilePattern { }
 
 
 
@@ -636,6 +636,26 @@ namespace SteelSeries {
         // ******************** EVENT DATA ********************
 
         public abstract class AbstractContextFrame { }
+        
+
+
+
+        // ******************** SCREEN DATA ********************
+
+        public enum ScreenMode {
+            screen
+        }
+
+
+        public enum ScreenDataType {
+            Static = 0,
+            Range
+        }
+
+        public abstract class AbstractFrameData : UnityEngine.ScriptableObject { }
+
+        public abstract class AbstractScreenData : UnityEngine.ScriptableObject { }
+
 
     }
 

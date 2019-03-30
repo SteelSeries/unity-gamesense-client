@@ -1,5 +1,5 @@
 ﻿/*
- * Screened128x36ZoneOne.cs
+ * ScreenDataStatic.cs
  *
  * authors: sharkgoesmad
  *
@@ -30,15 +30,20 @@ namespace SteelSeries {
 
     namespace GameSense {
 
-        namespace DeviceZone {
+        [UnityEngine.CreateAssetMenu(fileName = "ScreenDataStatic", menuName = "GameSense/Screen Data/Static")]
+        [System.Serializable] public class ScreenDataStatic : AbstractScreenData {
+            public AbstractFrameData[] datas;
 
-            [UnityEngine.CreateAssetMenu( fileName = "Screened128x36ZoneOne", menuName = "GameSense/Device - Zone/Screen/Screened 128x36/One" )]
-            public class Screened128x36ZoneOne : SpecificScreen_Zone {
+            private static ScreenDataStatic _new() {
+                ScreenDataStatic sd = UnityEngine.ScriptableObject.CreateInstance< ScreenDataStatic >();
+                return sd;
+            }
 
-                public Screened128x36ZoneOne() : base( 128, 36, ScreenZone.One ) { }
-
-            };
-
+            public static ScreenDataStatic Create( AbstractFrameData[] datas ) {
+                ScreenDataStatic sd = _new();
+                sd.datas = datas;
+                return sd;
+            }
         }
 
     }

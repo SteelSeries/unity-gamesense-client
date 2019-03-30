@@ -1,5 +1,5 @@
 ﻿/*
- * Screened128x36ZoneOne.cs
+ * LineDataAccessor.cs
  *
  * authors: sharkgoesmad
  *
@@ -26,19 +26,48 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using UnityEngine;
+using System.Collections.Generic;
+
 namespace SteelSeries {
 
     namespace GameSense {
 
-        namespace DeviceZone {
+        [System.Serializable] public class LineDataAccessor {//: UnityEngine.ScriptableObject {
+            public enum Type {
+                UpdateValue = 0,
+                FrameKey,
+                GoLispExpr
+            }
 
-            [UnityEngine.CreateAssetMenu( fileName = "Screened128x36ZoneOne", menuName = "GameSense/Device - Zone/Screen/Screened 128x36/One" )]
-            public class Screened128x36ZoneOne : SpecificScreen_Zone {
+            public Type type;
+            public string value;
 
-                public Screened128x36ZoneOne() : base( 128, 36, ScreenZone.One ) { }
+            private static LineDataAccessor _new() {
+                return new LineDataAccessor();// CreateInstance< LineDataAccessor >();
+            }
 
-            };
+            public LineDataAccessor() {
+                type = Type.UpdateValue;
+            }
 
+            public static LineDataAccessor UpdateValue() {
+                return _new();
+            }
+
+            public static LineDataAccessor ContextFrameKey( string key ) {
+                var lda = _new();
+                lda.type = Type.FrameKey;
+                lda.value = key;
+                return lda;
+            }
+
+            public static LineDataAccessor GoLispExpression( string expression ) {
+                var lda = _new();
+                lda.type = Type.GoLispExpr;
+                lda.value = expression;
+                return lda;
+            }
         }
 
     }

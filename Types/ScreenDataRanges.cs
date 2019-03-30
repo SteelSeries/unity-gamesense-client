@@ -1,5 +1,5 @@
 ﻿/*
- * Screened128x36ZoneOne.cs
+ * ScreenDataRanges.cs
  *
  * authors: sharkgoesmad
  *
@@ -30,15 +30,24 @@ namespace SteelSeries {
 
     namespace GameSense {
 
-        namespace DeviceZone {
+        [UnityEngine.CreateAssetMenu(fileName = "ScreenDataRanges", menuName = "GameSense/Screen Data/Ranges")]
+        public class ScreenDataRanges : AbstractScreenData {
+            public FrameDataRange[] datas;
 
-            [UnityEngine.CreateAssetMenu( fileName = "Screened128x36ZoneOne", menuName = "GameSense/Device - Zone/Screen/Screened 128x36/One" )]
-            public class Screened128x36ZoneOne : SpecificScreen_Zone {
+            public ScreenDataRanges( FrameDataRange[] datas ) {
+                this.datas = datas;
+            }
 
-                public Screened128x36ZoneOne() : base( 128, 36, ScreenZone.One ) { }
+            private static ScreenDataRanges _new() {
+                ScreenDataRanges sd = UnityEngine.ScriptableObject.CreateInstance< ScreenDataRanges >();
+                return sd;
+            }
 
-            };
-
+            public static ScreenDataRanges Create( FrameDataRange[] datas ) {
+                ScreenDataRanges sd = _new();
+                sd.datas = datas;
+                return sd;
+            }
         }
 
     }

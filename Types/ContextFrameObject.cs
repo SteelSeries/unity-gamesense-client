@@ -68,6 +68,21 @@ namespace SteelSeries {
         }
 
 
+        public class ArrayVariant : Variant< ValueVariant[] > {
+            public ArrayVariant( ValueVariant[] value ) : base( value ) { }
+
+            public override FullSerializer.fsData Serialize() {
+                var lst = new List< FullSerializer.fsData >();
+
+                foreach (var v in value ) {
+                    lst.Add( v.Serialize() );
+                }
+
+                return new FullSerializer.fsData( lst );
+            }
+        }
+
+
         [FullSerializer.fsObject(Converter = typeof(ObjectVariantConverter))]
         [System.Serializable] public class ObjectVariant : ValueVariant {
             public Dictionary< string, ValueVariant > props { get; }
@@ -107,6 +122,11 @@ namespace SteelSeries {
             public ContextFrameObject() {
                 frame = new ObjectVariant();
             }
+
+            public ValueVariant this[ string key ] {
+                get { return frame[ key ]; }
+                set { frame[ key ] = value; }
+            }
         }
 
 
@@ -138,7 +158,7 @@ namespace SteelSeries {
                 converter.TrySerialize( model.frame, out data, typeof( ObjectVariant ) );
 
                 var props = data.AsDictionary;
-                foreach( var prop in props ) {
+                foreach ( var prop in props ) {
                     serialized.Add( prop.Key, prop.Value );
                 }
 

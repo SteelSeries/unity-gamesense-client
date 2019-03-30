@@ -32,7 +32,7 @@ namespace SteelSeries {
 
         namespace DeviceZone {
 
-            [UnityEngine.CreateAssetMenu( fileName = "Screened128x52ZoneOne", menuName = "GameSense/Device - Zone/Screened" )]
+            [UnityEngine.CreateAssetMenu( fileName = "Screened128x52ZoneOne", menuName = "GameSense/Device - Zone/Screen/Screened 128x52/One" )]
             public class Screened128x52ZoneOne : SpecificScreen_Zone {
 
                 public Screened128x52ZoneOne() : base( 128, 52, ScreenZone.One ) { }

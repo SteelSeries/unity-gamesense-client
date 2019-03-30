@@ -32,7 +32,7 @@ namespace SteelSeries {
 
         namespace DeviceZone {
 
-            [UnityEngine.CreateAssetMenu( fileName = "ScreenedZoneOne", menuName = "GameSense/Device - Zone/Screened" )]
+            [UnityEngine.CreateAssetMenu( fileName = "ScreenedZoneOne", menuName = "GameSense/Device - Zone/Screen/Generic/One" )]
             public class ScreenedZoneOne : AbstractGenericScreen_Zone {
 
                 public ScreenedZoneOne() : base( "screened", ScreenZone.One ) { }
