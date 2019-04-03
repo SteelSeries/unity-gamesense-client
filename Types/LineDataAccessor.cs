@@ -33,7 +33,7 @@ namespace SteelSeries {
 
     namespace GameSense {
 
-        [System.Serializable] public class LineDataAccessor {//: UnityEngine.ScriptableObject {
+        [System.Serializable] public class LineDataAccessor {
             public enum Type {
                 UpdateValue = 0,
                 FrameKey,
@@ -44,17 +44,26 @@ namespace SteelSeries {
             public string value;
 
             private static LineDataAccessor _new() {
-                return new LineDataAccessor();// CreateInstance< LineDataAccessor >();
+                return new LineDataAccessor();
             }
 
             public LineDataAccessor() {
                 type = Type.UpdateValue;
             }
 
+            /// <summary>
+            /// Construct LineDataAccessor to represent update value.
+            /// </summary>
+            /// <returns>LineDataAccessor instance</returns>
             public static LineDataAccessor UpdateValue() {
                 return _new();
             }
 
+            /// <summary>
+            /// Construct LineDataAccessor to select a property in context frame object.
+            /// </summary>
+            /// <param name="key">The name of the property whose value will be used in frame data</param>
+            /// <returns>LineDataAccessor instance</returns>
             public static LineDataAccessor ContextFrameKey( string key ) {
                 var lda = _new();
                 lda.type = Type.FrameKey;
@@ -62,6 +71,11 @@ namespace SteelSeries {
                 return lda;
             }
 
+            /// <summary>
+            /// Construct LineDataAccessor representing a GoLisp expression.
+            /// </summary>
+            /// <param name="expression">GoLisp expression to compute a value for frame data</param>
+            /// <returns>LineDataAccessor instance</returns>
             public static LineDataAccessor GoLispExpression( string expression ) {
                 var lda = _new();
                 lda.type = Type.GoLispExpr;

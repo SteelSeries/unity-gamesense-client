@@ -38,7 +38,7 @@ namespace SteelSeries {
             public System.UInt32 repeatLimit;  // required but can specify 0 for no limit
 
             private static RateStatic _new() {
-                RateStatic rs = UnityEngine.ScriptableObject.CreateInstance< RateStatic >();
+                RateStatic rs = CreateInstance< RateStatic >();
                 return rs;
             }
 
@@ -57,9 +57,9 @@ namespace SteelSeries {
             }
 
             protected override FullSerializer.fsResult DoSerialize( RateStatic model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                // TODO check result of each
-                SerializeMember< System.UInt32 >( serialized, null, "frequency", model.frequency );
-                SerializeMember< System.UInt32 >( serialized, null, "repeat_limit", model.repeatLimit );
+
+                SerializeMember( serialized, null, "frequency", model.frequency );
+                SerializeMember( serialized, null, "repeat_limit", model.repeatLimit );
 
                 return FullSerializer.fsResult.Success;
             }

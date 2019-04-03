@@ -299,7 +299,6 @@ namespace SteelSeries {
 
 
 
-
             // ******************** PROPS ********************
 
             public static GSClient Instance {
@@ -535,6 +534,12 @@ namespace SteelSeries {
                         msg = new QueueMsgBindEvent();
                         msg.data = be;
 
+                        // let handlers do work
+                        // on main thread before enqueueing
+                        foreach ( var h in be.handlers ) {
+                            h.Preprocess();
+                        }
+
                     }
 
                     _mMsgQueue.PEnqueue( msg );
@@ -766,6 +771,12 @@ namespace SteelSeries {
                 QueueMsgBindEvent msg = new QueueMsgBindEvent();
                 msg.data = new Bind_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId, handlers );
 
+                // let handlers do work
+                // on main thread before enqueueing
+                foreach ( var h in handlers ) {
+                    h.Preprocess();
+                }
+
                 _mMsgQueue.PEnqueue( msg );
 #endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
             }
@@ -801,7 +812,6 @@ namespace SteelSeries {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActive() ) return;
 
-                // TODO avoid mem allocations
                 Send_Event se = new Send_Event();
                 se.game = GameName;
                 se.event_name = eventName.ToUpper();
@@ -826,7 +836,6 @@ namespace SteelSeries {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActive() ) return;
 
-                // TODO avoid mem allocations
                 Send_Event se = new Send_Event();
                 se.game = GameName;
                 se.event_name = eventName.ToUpper();

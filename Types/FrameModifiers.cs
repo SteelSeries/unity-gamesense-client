@@ -50,19 +50,6 @@ namespace SteelSeries {
                     _repeats = value;
                 }
             }
-            //public bool repeats {
-            //    get {
-            //        BoolVariant v = _repeats as BoolVariant;
-            //        return v.value;
-            //    }
-            //}
-
-            //public System.UInt32 repeatCount {
-            //    get {
-            //        IntegerVariant v = _repeats as IntegerVariant;
-            //        return ( System.UInt32 )v.value;
-            //    }
-            //}
 
             public FrameModifiers( System.UInt32 lengthMs, System.UInt32 repeatCount ) {
                 length_millis = lengthMs;

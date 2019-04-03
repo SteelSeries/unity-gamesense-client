@@ -43,6 +43,12 @@ namespace SteelSeries {
                 this.high = high;
                 this.datas = datas;
             }
+
+            public void Preprocess() {
+                foreach ( var d in datas ) {
+                    d.Preprocess();
+                }
+            }
         }
 
         class FrameDataRangeConverter : FullSerializer.fsDirectConverter< FrameDataRange > {

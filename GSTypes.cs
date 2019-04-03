@@ -249,10 +249,16 @@ namespace SteelSeries {
             }
 
             public class SpecificScreen_Zone : AbstractGenericScreen_Zone {
-                protected System.UInt32 _width;
-                protected System.UInt32 _height;
-                public System.UInt32 width { get { return _width; } }
-                public System.UInt32 height { get { return _height; } }
+                protected uint _width;
+                protected uint _height;
+                public uint width { get { return _width; } }
+                public uint height { get { return _height; } }
+
+                public uint TargetArraySize() {
+                    double area = width * height;
+                    return ( uint )System.Math.Ceiling( area / 8.0 );
+                }
+
                 public SpecificScreen_Zone( System.UInt32 width, System.UInt32 height, string zone ) :
                     base( string.Format( "screened-{0}x{1}", width, height ), zone ) { _width = width; _height = height; }
             }
@@ -267,7 +273,9 @@ namespace SteelSeries {
         public abstract class AbstractRate : UnityEngine.ScriptableObject { }
 
 
-        public abstract class AbstractHandler : UnityEngine.ScriptableObject { }
+        public abstract class AbstractHandler : UnityEngine.ScriptableObject {
+            public virtual void Preprocess() { }
+        }
 
 
 
@@ -652,7 +660,9 @@ namespace SteelSeries {
             Range
         }
 
-        public abstract class AbstractFrameData : UnityEngine.ScriptableObject { }
+        public abstract class AbstractFrameData : UnityEngine.ScriptableObject {
+            public virtual void Preprocess() { }
+        }
 
         public abstract class AbstractScreenData : UnityEngine.ScriptableObject { }
 

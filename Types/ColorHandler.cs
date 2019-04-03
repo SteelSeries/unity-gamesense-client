@@ -124,7 +124,6 @@ namespace SteelSeries {
                 ch.rate_range = rate;
                 return ch;
             }
-
         }
 
 

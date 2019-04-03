@@ -39,7 +39,7 @@ namespace SteelSeries {
             }
 
             private static ScreenDataRanges _new() {
-                ScreenDataRanges sd = UnityEngine.ScriptableObject.CreateInstance< ScreenDataRanges >();
+                ScreenDataRanges sd = CreateInstance< ScreenDataRanges >();
                 return sd;
             }
 

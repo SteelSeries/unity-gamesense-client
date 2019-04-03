@@ -33,7 +33,6 @@ namespace SteelSeries {
 
     namespace GameSense {
 
-        //[UnityEngine.CreateAssetMenu(fileName = "LineDataText", menuName = "GameSense/Screen Data/Frame Data/Line Data - Text")]
         [System.Serializable] public class LineDataText {
             public bool has_text { get; private set; }
             public string prefix;
@@ -61,7 +60,6 @@ namespace SteelSeries {
             }
         }
 
-        //[UnityEngine.CreateAssetMenu(fileName = "LineDataProgressBar", menuName = "GameSense/Screen Data/Frame Data/Line Data - Progress Bar")]
         [System.Serializable] public class LineDataProgressBar {
             public const bool has_progress_bar = true;
             public static LineDataProgressBar Create() {
@@ -95,7 +93,7 @@ namespace SteelSeries {
             }
 
             private static LineData _new() {
-                return ScriptableObject.CreateInstance< LineData >();
+                return CreateInstance< LineData >();
             }
 
             public LineData() {

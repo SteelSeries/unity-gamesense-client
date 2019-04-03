@@ -26,6 +26,8 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.Generic;
+
 namespace SteelSeries {
 
     namespace GameSense {
@@ -79,16 +81,34 @@ namespace SteelSeries {
                 sh.data_ranges = ScreenDataRanges.Create( datas );
                 return sh;
             }
+
+            public override void Preprocess() {
+                switch ( screenDataType ) {
+
+                    case ScreenDataType.Static:
+                        foreach ( var d in data_static.datas ) {
+                            d.Preprocess();
+                        }
+                        break;
+
+                    case ScreenDataType.Range:
+                        foreach ( var d in data_ranges.datas ) {
+                            d.Preprocess();
+                        }
+                        break;
+
+                }
+            }
         }
 
 
         class ScreenHandlerConverter : FullSerializer.fsDirectConverter< ScreenHandler > {
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref ScreenHandler model ) {
+            protected override FullSerializer.fsResult DoDeserialize( Dictionary< string, FullSerializer.fsData > data, ref ScreenHandler model ) {
                 return FullSerializer.fsResult.Fail( "Not implemented" );
             }
 
-            protected override FullSerializer.fsResult DoSerialize( ScreenHandler model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                // TODO check result of each
+            protected override FullSerializer.fsResult DoSerialize( ScreenHandler model, Dictionary< string, FullSerializer.fsData > serialized ) {
+
                 SerializeMember( serialized, null, "device-type", model.deviceZone.device );
                 SerializeMember( serialized, null, "zone", ((DeviceZone.AbstractGenericScreen_Zone)model.deviceZone).zone );
                 SerializeMember( serialized, null, "mode", model.mode );

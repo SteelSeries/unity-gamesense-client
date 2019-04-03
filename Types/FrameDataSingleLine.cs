@@ -37,10 +37,12 @@ namespace SteelSeries {
             public EventIconId iconId;
             public FrameModifiers frameModifiers;
 
-            public FrameDataSingleLine( LineData lineData, FrameModifiers frameModifiers, EventIconId iconId = EventIconId.Default ) {
-                this.lineData = lineData;
-                this.frameModifiers = frameModifiers;
-                this.iconId = iconId;
+            public FrameDataSingleLine Create( LineData lineData, FrameModifiers frameModifiers, EventIconId iconId = EventIconId.Default ) {
+                var fd = CreateInstance< FrameDataSingleLine >();
+                fd.lineData = lineData;
+                fd.frameModifiers = frameModifiers;
+                fd.iconId = iconId;
+                return fd;
             }
         }
 
@@ -51,38 +53,9 @@ namespace SteelSeries {
 
             protected override FullSerializer.fsResult DoSerialize( FrameDataSingleLine model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
 
-                //switch ( model.lineData.type ) {
-
-                //    case LineData.Type.Text:
-                //        LineDataText ldtxt = model.lineData.AsText;
-                //        SerializeMember( serialized, null, "has-text", ldtxt.has_text );
-                //        SerializeMember( serialized, null, "prefix", ldtxt.prefix );
-                //        SerializeMember( serialized, null, "suffix", ldtxt.suffix );
-                //        SerializeMember( serialized, null, "bold", ldtxt.bold );
-                //        SerializeMember( serialized, null, "wrap", ldtxt.wrap );
-                //        break;
-
-                //    case LineData.Type.ProgressBar:
-                //        SerializeMember( serialized, null, "has-progress-bar",  LineDataProgressBar.has_progress_bar );
-                //        break;
-
-                //}
                 model.lineData.DecorateSerialized( serialized );
 
                 SerializeMember( serialized, null, "icon-id", ( System.UInt32 )model.iconId );
-
-                //switch ( model.lineData.accessor.type ) {
-
-                //    case LineDataAccessor.Type.FrameKey:
-                //        SerializeMember( serialized, null, "context-frame-key", model.lineData.accessor.value );
-                //        break;
-                    
-                //    case LineDataAccessor.Type.GoLispExpr:
-                //        SerializeMember( serialized, null, "arg", model.lineData.accessor.value );
-                //        break;
-
-                //}
-
                 SerializeMember( serialized, null, "length-millis",  model.frameModifiers.length_millis );
 
                 if ( model.frameModifiers.repeats && model.frameModifiers.repeatCount != 0 ) {

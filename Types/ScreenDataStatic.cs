@@ -35,7 +35,7 @@ namespace SteelSeries {
             public AbstractFrameData[] datas;
 
             private static ScreenDataStatic _new() {
-                ScreenDataStatic sd = UnityEngine.ScriptableObject.CreateInstance< ScreenDataStatic >();
+                ScreenDataStatic sd = CreateInstance<ScreenDataStatic>();
                 return sd;
             }
 

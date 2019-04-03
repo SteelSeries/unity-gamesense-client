@@ -40,7 +40,6 @@ namespace SteelSeries {
         [FullSerializer.fsObject(Converter = typeof(TactileHandlerConverter))]
         [UnityEngine.CreateAssetMenu(fileName = "TactileHandler", menuName = "GameSense/Handlers/Tactile Handler")]
         [System.Serializable] public class TactileHandler : AbstractHandler {
-
             private TactilePatternType _tactilePatternType;
             public TactilePatternType TactilePatternType { get { return _tactilePatternType; } }
             private RateMode _rateMode;
