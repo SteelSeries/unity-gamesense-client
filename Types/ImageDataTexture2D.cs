@@ -48,7 +48,8 @@ namespace SteelSeries {
             }
 
             /// <summary>
-            /// Convert stored texture to a packed binary image. Per pixel instensity is computed and thresholded. 
+            /// Convert stored texture to a packed binary image. Per pixel instensity is computed and thresholded.
+            /// This needs to be called in context of the main thread.
             /// </summary>
             /// <param name="deviceZone">Device-zone object</param>
             /// <returns>Packed binary image in a byte array</returns>
@@ -103,7 +104,7 @@ namespace SteelSeries {
                     }
                 }
 
-                System.Byte[] data = new System.Byte[ deviceZone.TargetArraySize() ];
+                System.Byte[] data = new System.Byte[ deviceZone.TargetScreenBufferSize() ];
                 uint idx = 0;
                 const byte threshold = 0x80;
                 for ( uint dataIdx = 0; dataIdx < data.Length; ++dataIdx ) {

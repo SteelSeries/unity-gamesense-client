@@ -524,15 +524,17 @@ namespace SteelSeries {
                     if ( be.handlers == null || be.handlers.Length == 0 ) {
 
                         // if no handlers provided, we will at least register these events with SSE
-                        msg = new QueueMsgRegisterEvent();
-                        msg.data = new Register_Event( GameName, be.eventName, be.minValue, be.maxValue, be.iconId );
+                        msg = new QueueMsgRegisterEvent {
+                            data = new Register_Event( GameName, be.eventName, be.minValue, be.maxValue, be.iconId )
+                        };
 
                     } else {
 
                         // bind events with defualt handlers
                         be.game = GameName;
-                        msg = new QueueMsgBindEvent();
-                        msg.data = be;
+                        msg = new QueueMsgBindEvent {
+                            data = be
+                        };
 
                         // let handlers do work
                         // on main thread before enqueueing
@@ -567,8 +569,9 @@ namespace SteelSeries {
 
                                 // if a heartbeat event is due, send it now
                                 if ( tLastMsg.ElapsedMilliseconds > _MaxIdleTimeBeforeHeartbeat ) {
-                                    msg = new QueueMsgSendHeartbeat();
-                                    msg.data = new Game( GameName );
+                                    msg = new QueueMsgSendHeartbeat {
+                                        data = new Game( GameName )
+                                    };
 
                                     break;
                                 }
@@ -741,13 +744,15 @@ namespace SteelSeries {
                 GameDisplayName = displayName;
                 IconColor = iconColor;
 
-                Register_Game obj = new Register_Game();
-                obj.game = GameName;
-                obj.game_display_name = GameDisplayName;
-                obj.icon_color_id = iconColor;
+                Register_Game obj = new Register_Game {
+                    game = GameName,
+                    game_display_name = GameDisplayName,
+                    icon_color_id = iconColor
+                };
 
-                QueueMsgRegisterGame msg = new QueueMsgRegisterGame();
-                msg.data = obj;
+                QueueMsgRegisterGame msg = new QueueMsgRegisterGame {
+                    data = obj
+                };
 
                 _mMsgQueue.PEnqueue( msg );
 #endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
@@ -768,8 +773,9 @@ namespace SteelSeries {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActive() ) return;
 
-                QueueMsgBindEvent msg = new QueueMsgBindEvent();
-                msg.data = new Bind_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId, handlers );
+                QueueMsgBindEvent msg = new QueueMsgBindEvent {
+                    data = new Bind_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId, handlers )
+                };
 
                 // let handlers do work
                 // on main thread before enqueueing
@@ -796,8 +802,9 @@ namespace SteelSeries {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActive() ) return;
 
-                QueueMsgRegisterEvent msg = new QueueMsgRegisterEvent();
-                msg.data = new Register_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId );
+                QueueMsgRegisterEvent msg = new QueueMsgRegisterEvent {
+                    data = new Register_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId )
+                };
 
                 _mMsgQueue.PEnqueue( msg );
 #endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
@@ -808,42 +815,23 @@ namespace SteelSeries {
             /// </summary>
             /// <param name="eventName">Previously bound/registered event</param>
             /// <param name="value">New value</param>
-            public void SendEvent( string eventName, System.Int32 value ) {
+            /// <param name="frame">Optional context frame specifying additional</param>
+            public void SendEvent( string eventName, System.Int32 value, AbstractContextFrame frame = null ) {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActive() ) return;
 
-                Send_Event se = new Send_Event();
-                se.game = GameName;
-                se.event_name = eventName.ToUpper();
-                se.data.value = value;
-                se.data.frame = null;
+                Send_Event se = new Send_Event {
+                    game = GameName,
+                    event_name = eventName.ToUpper(),
+                    data = {
+                        value = value,
+                        frame = frame
+                    }
+                };
 
-                QueueMsgSendEvent msg = new QueueMsgSendEvent();
-                msg.data = se;
-
-                _mMsgQueue.PEnqueue( msg );
-#endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
-            }
-
-            /// <summary>
-            /// Sends a new value for the specified event to the GameSense Server.
-            /// TODO modify the above and remove this one
-            /// </summary>
-            /// <param name="eventName">Previously bound/registered event</param>
-            /// <param name="value">New value</param>
-            /// <param name="frame"></param>
-            public void SendEvent( string eventName, System.Int32 value, AbstractContextFrame frame ) {
-#if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
-                if ( !_isClientActive() ) return;
-
-                Send_Event se = new Send_Event();
-                se.game = GameName;
-                se.event_name = eventName.ToUpper();
-                se.data.value = value;
-                se.data.frame = frame;
-
-                QueueMsgSendEvent msg = new QueueMsgSendEvent();
-                msg.data = se;
+                QueueMsgSendEvent msg = new QueueMsgSendEvent {
+                    data = se
+                };
 
                 _mMsgQueue.PEnqueue( msg );
 #endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
@@ -856,8 +844,9 @@ namespace SteelSeries {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActive() ) return;
 
-                QueueMsgRemoveGame msg = new QueueMsgRemoveGame();
-                msg.data = new Game( GameName );
+                QueueMsgRemoveGame msg = new QueueMsgRemoveGame {
+                    data = new Game( GameName )
+                };
 
                 _mMsgQueue.PEnqueue( msg );
 #endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED

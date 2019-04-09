@@ -31,11 +31,17 @@ namespace SteelSeries {
 
     namespace GameSense {
 
+        /// <summary>
+        /// Base class for property types used when composing ContextFrameObject.
+        /// </summary>
         [System.Serializable] public abstract class ValueVariant {
             public abstract FullSerializer.fsData Serialize();
         }
 
-
+        /// <summary>
+        /// Base generic class for concrete property types.
+        /// </summary>
+        /// <typeparam name="T">Concrete type</typeparam>
         [FullSerializer.fsObject(Converter = typeof(ObjectVariantConverter))]
         [System.Serializable] public abstract class Variant< T > : ValueVariant {
             public T value { get; set; }
@@ -43,31 +49,41 @@ namespace SteelSeries {
             public Variant( T v ) { value = v; }
         }
 
-
+        /// <summary>
+        /// Boolean property type.
+        /// </summary>
         public class BoolVariant : Variant< bool > {
             public BoolVariant( bool value ) : base( value ) { }
             public override FullSerializer.fsData Serialize() { return new FullSerializer.fsData( value ); }
         }
 
-
+        /// <summary>
+        /// Integer property type.
+        /// </summary>
         public class IntegerVariant : Variant< int > {
             public IntegerVariant( int value ) : base( value ) { }
             public override FullSerializer.fsData Serialize() { return new FullSerializer.fsData( value ); }
         }
 
-
+        /// <summary>
+        /// Floating point property type.
+        /// </summary>
         public class FloatVariant : Variant< double > {
             public FloatVariant( double value ) : base( value ) { }
             public override FullSerializer.fsData Serialize() { return new FullSerializer.fsData( value ); }
         }
 
-
+        /// <summary>
+        /// String property type.
+        /// </summary>
         public class StringVariant : Variant< string > {
             public StringVariant( string value ) : base( value ) { }
             public override FullSerializer.fsData Serialize() { return new FullSerializer.fsData( value ); }
         }
 
-
+        /// <summary>
+        /// Array of variants property type.
+        /// </summary>
         public class ArrayVariant : Variant< ValueVariant[] > {
             public ArrayVariant( ValueVariant[] value ) : base( value ) { }
 
@@ -82,11 +98,18 @@ namespace SteelSeries {
             }
         }
 
-
+        /// <summary>
+        /// Object property type.
+        /// </summary>
         [FullSerializer.fsObject(Converter = typeof(ObjectVariantConverter))]
         [System.Serializable] public class ObjectVariant : ValueVariant {
             public Dictionary< string, ValueVariant > props { get; }
 
+            /// <summary>
+            /// Set or get a named property for this object.
+            /// </summary>
+            /// <param name="key">Property name</param>
+            /// <returns>Property value</returns>
             public ValueVariant this[ string key ] {
                 get { return props[ key ]; }
                 set { props[ key ] = value; }
@@ -114,7 +137,9 @@ namespace SteelSeries {
             }
         }
 
-
+        /// <summary>
+        /// Allows to compose a custom object as a context frame.
+        /// </summary>
         [FullSerializer.fsObject(Converter = typeof(ContextFrameObjectConverter))]
         [System.Serializable] public class ContextFrameObject : AbstractContextFrame {
             public ObjectVariant frame;
@@ -123,6 +148,11 @@ namespace SteelSeries {
                 frame = new ObjectVariant();
             }
 
+            /// <summary>
+            /// Get or set properties of the context frame object.
+            /// </summary>
+            /// <param name="key">Property name</param>
+            /// <returns>Property  value</returns>
             public ValueVariant this[ string key ] {
                 get { return frame[ key ]; }
                 set { frame[ key ] = value; }

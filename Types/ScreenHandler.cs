@@ -82,6 +82,10 @@ namespace SteelSeries {
                 return sh;
             }
 
+            /// <summary>
+            /// Invoke Preprocess for each contained frame data.
+            /// Needs to be called on the main thread (from Monobehaviour script).
+            /// </summary>
             public override void Preprocess() {
                 switch ( screenDataType ) {
 

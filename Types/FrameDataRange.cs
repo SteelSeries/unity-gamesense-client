@@ -44,6 +44,9 @@ namespace SteelSeries {
                 this.datas = datas;
             }
 
+            /// <summary>
+            /// Allow frames to do processing before while still on the main thread.
+            /// </summary>
             public void Preprocess() {
                 foreach ( var d in datas ) {
                     d.Preprocess();

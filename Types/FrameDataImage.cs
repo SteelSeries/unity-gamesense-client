@@ -85,6 +85,9 @@ namespace SteelSeries {
                 return fd;
             }
 
+            /// <summary>
+            /// Obtain image data from image source. This should be called in context of the main thread.
+            /// </summary>
             public override void Preprocess() {
                 if ( deviceZone == null ) {
                     Debug.LogError( "Device-zone object not specified" );
@@ -116,7 +119,7 @@ namespace SteelSeries {
                     return FullSerializer.fsResult.Fail( "Nil image data" );
                 }
 
-                if ( model.data.Length != model.deviceZone.TargetArraySize() ) {
+                if ( model.data.Length != model.deviceZone.TargetScreenBufferSize() ) {
                     return FullSerializer.fsResult.Fail( "Image data size mismatch" );
                 }
 

@@ -254,8 +254,20 @@ namespace SteelSeries {
                 public uint width { get { return _width; } }
                 public uint height { get { return _height; } }
 
-                public uint TargetArraySize() {
-                    double area = width * height;
+                /// <summary>
+                /// Display area of this screen device.
+                /// </summary>
+                /// <returns>Area in pixels</returns>
+                public uint TargetScreenDisplayArea() {
+                    return width * height;
+                }
+
+                /// <summary>
+                /// Buffer size required for this screen device.
+                /// </summary>
+                /// <returns>Buffer size in bytes</returns>
+                public uint TargetScreenBufferSize() {
+                    double area = TargetScreenDisplayArea();
                     return ( uint )System.Math.Ceiling( area / 8.0 );
                 }
 
@@ -274,6 +286,10 @@ namespace SteelSeries {
 
 
         public abstract class AbstractHandler : UnityEngine.ScriptableObject {
+            /// <summary>
+            /// Reimplemented in subclasses to carry out any kind of processing.
+            /// This needs to be called from a Monobehaviour script or otherwise on the main thread.
+            /// </summary>
             public virtual void Preprocess() { }
         }
 
@@ -302,7 +318,6 @@ namespace SteelSeries {
         }
 
 
-        // TODO copy constructors
         [System.Serializable] public struct RGB {
             public System.Byte red;
             public System.Byte green;
@@ -373,7 +388,7 @@ namespace SteelSeries {
             }
 
             protected override FullSerializer.fsResult DoSerialize( ColorRange model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                // TODO check result of each
+
                 SerializeMember< System.UInt32 >( serialized, null, "low", model.low );
                 SerializeMember< System.UInt32 >( serialized, null, "high", model.high );
 
@@ -585,7 +600,7 @@ namespace SteelSeries {
             }
 
             protected override FullSerializer.fsResult DoSerialize( TactileEffectSimple model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                // TODO check result of each
+
                 SerializeMember< TactileEffectType >( serialized, null, "type", model.type );
                 SerializeMember< System.UInt32 >( serialized, null, "delay-ms", model.delay_ms );
 
@@ -600,7 +615,7 @@ namespace SteelSeries {
             }
 
             protected override FullSerializer.fsResult DoSerialize( TactileEffectCustom model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                // TODO check result of each
+
                 SerializeMember< string >( serialized, null, "type", TactileEffectCustom.type );
                 SerializeMember< System.UInt32 >( serialized, null, "length-ms", model.length_ms );
                 SerializeMember< System.UInt32 >( serialized, null, "delay-ms", model.delay_ms );
@@ -616,7 +631,7 @@ namespace SteelSeries {
             }
 
             protected override FullSerializer.fsResult DoSerialize( TactileEffectRange model, System.Collections.Generic.Dictionary<string, FullSerializer.fsData> serialized ) {
-                // TODO check result of each
+
                 SerializeMember<System.UInt32>( serialized, null, "low", model.low );
                 SerializeMember<System.UInt32>( serialized, null, "high", model.high );
 
@@ -661,6 +676,10 @@ namespace SteelSeries {
         }
 
         public abstract class AbstractFrameData : UnityEngine.ScriptableObject {
+            /// <summary>
+            /// Reimplemented in subclasses to carry out any kind of processing.
+            /// This method needs to be called from a Monobehaviour script or otherwise on the main thread.
+            /// </summary>
             public virtual void Preprocess() { }
         }
 
