@@ -36,6 +36,13 @@ namespace SteelSeries {
         /// </summary>
         [System.Serializable] public abstract class ValueVariant {
             public abstract FullSerializer.fsData Serialize();
+
+            public static implicit operator ValueVariant( bool v ) { return new BoolVariant( v ); }
+            public static implicit operator ValueVariant( int v ) { return new IntegerVariant( v ); }
+            public static implicit operator ValueVariant( double v ) { return new FloatVariant( v ); }
+            public static implicit operator ValueVariant( string v ) { return new StringVariant( v ); }
+            public static implicit operator ValueVariant( ValueVariant[] v ) { return new ArrayVariant( v ); }
+            public static implicit operator ValueVariant( Dictionary< string, ValueVariant > v ) { return new ObjectVariant( v ); }
         }
 
         /// <summary>
