@@ -63,7 +63,15 @@ namespace SteelSeries {
             Mana        = 14,   // Mana/Potion
             Clock       = 15,   // Clock
             Lightning   = 16,   // Lightning
-            Item        = 17    // Item/Backpack
+            Item        = 17,   // Item/Backpack
+            AtSymbol    = 18,
+            Muted       = 19,
+            Talking     = 20,
+            Connect     = 21,
+            Disconnect  = 22,
+            Music       = 23,
+            Play        = 24,
+            Pause       = 25
         }
 
 
