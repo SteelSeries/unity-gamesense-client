@@ -40,7 +40,7 @@ namespace SteelSeries {
 
             public string GameName;
             public string GameDisplayName;
-            public IconColor IconColor;
+            public string Developer;
             public Bind_Event[] Events;
 
 
@@ -68,8 +68,8 @@ namespace SteelSeries {
                 public System.Int32 minValue;
                 public System.Int32 maxValue;
                 public EventIconId iconId;
-                public AbstractHandler[] handlers;
                 public bool valueOptional;
+                public AbstractHandler[] handlers;
 
                 public Bind_Event( string gameName, string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId, AbstractHandler[] handlers, bool valueOptional = false) {
                     this.game = gameName;
@@ -113,7 +113,7 @@ namespace SteelSeries {
             class Register_Game {
                 public string game;
                 public string game_display_name;
-                public IconColor icon_color_id;
+                public string developer;
             }
 
             class Game {
@@ -183,9 +183,9 @@ namespace SteelSeries {
 
                 protected override FullSerializer.fsResult DoSerialize( Register_Game model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
 
-                    SerializeMember< string >( serialized, null, "game", model.game );
-                    SerializeMember< string >( serialized, null, "game_display_name", model.game_display_name );
-                    SerializeMember< System.UInt32 >( serialized, null, "icon_color_id", (System.UInt32)model.icon_color_id );
+                    SerializeMember( serialized, null, "game", model.game );
+                    SerializeMember( serialized, null, "game_display_name", model.game_display_name );
+                    SerializeMember( serialized, null, "developer", model.developer );
 
                     return FullSerializer.fsResult.Success;
                 }
@@ -520,7 +520,7 @@ namespace SteelSeries {
                     return;
                 }
 
-                RegisterGame( GameName, GameDisplayName, IconColor );
+                RegisterGame( GameName, GameDisplayName, Developer );
 
                 // TODO need to throttle this so we do not overflow the queue
                 //      temporarily mitigated by increasing the queue size
@@ -744,16 +744,43 @@ namespace SteelSeries {
             /// <param name="name">Game Identifier. Valid characters are limited to uppercase A-Z, the digits 0-9, hyphen, and underscore</param>
             /// <param name="displayName">The name that will appear in SteelSeries Engine for this game</param>
             /// <param name="iconColor">Color icon identifier that will appear for this game in SteelSeries Engine</param>
+            [System.Obsolete("This method is deprecated. See RegisterGame below.")]
             public void RegisterGame( string name, string displayName, IconColor iconColor ) {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 GameName = name.ToUpper();
                 GameDisplayName = displayName;
-                IconColor = iconColor;
+                Developer = "";
 
                 Register_Game obj = new Register_Game {
                     game = GameName,
                     game_display_name = GameDisplayName,
-                    icon_color_id = iconColor
+                    developer = Developer
+                };
+
+                QueueMsgRegisterGame msg = new QueueMsgRegisterGame {
+                    data = obj
+                };
+
+                _mMsgQueue.PEnqueue( msg );
+#endif  // (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
+            }
+
+            /// <summary>
+            /// Registers a game with GameSense server. Must be called before everything else.
+            /// </summary>
+            /// <param name="name">Game Identifier. Valid characters are limited to uppercase A-Z, the digits 0-9, hyphen, and underscore</param>
+            /// <param name="displayName">The name that will appear in SteelSeries Engine for this game</param>
+            /// <param name="iconColor">Color icon identifier that will appear for this game in SteelSeries Engine</param>
+            public void RegisterGame( string name, string displayName, string developer ) {
+#if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
+                GameName = name.ToUpper();
+                GameDisplayName = displayName;
+                Developer = developer;
+
+                Register_Game obj = new Register_Game {
+                    game = GameName,
+                    game_display_name = GameDisplayName,
+                    developer = Developer
                 };
 
                 QueueMsgRegisterGame msg = new QueueMsgRegisterGame {

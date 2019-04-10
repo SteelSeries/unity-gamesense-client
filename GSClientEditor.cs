@@ -156,14 +156,14 @@ namespace SteelSeries {
 
             SerializedProperty gameName;
             SerializedProperty gameDisplayName;
-            SerializedProperty iconColor;
+            SerializedProperty developer;
             SerializedProperty events;
 
             void OnEnable() {
 
                 gameName = serializedObject.FindProperty( "GameName" );
                 gameDisplayName = serializedObject.FindProperty( "GameDisplayName" );
-                iconColor = serializedObject.FindProperty( "IconColor" );
+                developer = serializedObject.FindProperty( "Developer" );
                 events = serializedObject.FindProperty( "Events" );
 
             }
@@ -176,7 +176,7 @@ namespace SteelSeries {
 
                 EditorGUILayout.PropertyField( gameName );
                 EditorGUILayout.PropertyField( gameDisplayName );
-                EditorGUILayout.PropertyField( iconColor );
+                EditorGUILayout.PropertyField( developer );
 
                 EditorGUILayout.PropertyField( events, true );
 

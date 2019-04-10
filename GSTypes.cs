@@ -30,6 +30,7 @@ namespace SteelSeries {
 
     namespace GameSense {
 
+        [System.Obsolete("This enum is deprecated and will be remove in the following release")]
         public enum IconColor {
             Orange      = 0,
             Gold        = 1,
