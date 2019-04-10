@@ -69,14 +69,16 @@ namespace SteelSeries {
                 public System.Int32 maxValue;
                 public EventIconId iconId;
                 public AbstractHandler[] handlers;
+                public bool valueOptional;
 
-                public Bind_Event( string gameName, string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId, AbstractHandler[] handlers) {
+                public Bind_Event( string gameName, string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId, AbstractHandler[] handlers, bool valueOptional = false) {
                     this.game = gameName;
                     this.eventName = eventName;
                     this.minValue = minValue;
                     this.maxValue = maxValue;
                     this.iconId = iconId;
                     this.handlers = handlers;
+                    this.valueOptional = valueOptional;
                 }
             }
 
@@ -88,13 +90,15 @@ namespace SteelSeries {
                 public System.Int32 minValue;
                 public System.Int32 maxValue;
                 public EventIconId iconId;
+                public bool valueOptional;
 
-                public Register_Event( string gameName, string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId ) {
+                public Register_Event( string gameName, string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId, bool valueOptional = false ) {
                     this.game = gameName;
                     this.eventName = eventName;
                     this.minValue = minValue;
                     this.maxValue = maxValue;
                     this.iconId = iconId;
+                    this.valueOptional = valueOptional;
                 }
             }
 
@@ -126,13 +130,14 @@ namespace SteelSeries {
                 }
 
                 protected override FullSerializer.fsResult DoSerialize( Bind_Event model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                    // TODO check result of each
-                    SerializeMember< string >( serialized, null, "game", model.game.ToUpper() );
-                    SerializeMember< string >( serialized, null, "event", model.eventName );
-                    SerializeMember< System.Int32 >( serialized, null, "min_value", model.minValue );
-                    SerializeMember< System.Int32 >( serialized, null, "max_value", model.maxValue );
-                    SerializeMember< System.UInt32 >( serialized, null, "icon_id", (System.UInt32)model.iconId );
-                    SerializeMember< AbstractHandler[] >( serialized, null, "handlers", model.handlers );
+
+                    SerializeMember( serialized, null, "game", model.game.ToUpper() );
+                    SerializeMember( serialized, null, "event", model.eventName );
+                    SerializeMember( serialized, null, "min_value", model.minValue );
+                    SerializeMember( serialized, null, "max_value", model.maxValue );
+                    SerializeMember( serialized, null, "icon_id", (System.UInt32)model.iconId );
+                    SerializeMember( serialized, null, "value_optional", model.valueOptional );
+                    SerializeMember( serialized, null, "handlers", model.handlers );
 
                     return FullSerializer.fsResult.Success;
                 }
@@ -144,12 +149,13 @@ namespace SteelSeries {
                 }
 
                 protected override FullSerializer.fsResult DoSerialize( Register_Event model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                    // TODO check result of each
-                    SerializeMember< string >( serialized, null, "game", model.game.ToUpper() );
-                    SerializeMember< string >( serialized, null, "event", model.eventName );
-                    SerializeMember< System.Int32 >( serialized, null, "min_value", model.minValue );
-                    SerializeMember< System.Int32 >( serialized, null, "max_value", model.maxValue );
-                    SerializeMember< System.UInt32 >( serialized, null, "icon_id", (System.UInt32)model.iconId );
+
+                    SerializeMember( serialized, null, "game", model.game.ToUpper() );
+                    SerializeMember( serialized, null, "event", model.eventName );
+                    SerializeMember( serialized, null, "min_value", model.minValue );
+                    SerializeMember( serialized, null, "max_value", model.maxValue );
+                    SerializeMember( serialized, null, "icon_id", (System.UInt32)model.iconId );
+                    SerializeMember( serialized, null, "value_optional", model.valueOptional );
 
                     return FullSerializer.fsResult.Success;
                 }
@@ -161,7 +167,7 @@ namespace SteelSeries {
                 }
 
                 protected override FullSerializer.fsResult DoSerialize( Send_Event model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                    // TODO check result of each
+
                     SerializeMember< string >( serialized, null, "game", model.game );
                     SerializeMember< string >( serialized, null, "event", model.event_name );
                     SerializeMember< EventData >( serialized, null, "data", model.data );
@@ -176,7 +182,7 @@ namespace SteelSeries {
                 }
 
                 protected override FullSerializer.fsResult DoSerialize( Register_Game model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                    // TODO check result of each
+
                     SerializeMember< string >( serialized, null, "game", model.game );
                     SerializeMember< string >( serialized, null, "game_display_name", model.game_display_name );
                     SerializeMember< System.UInt32 >( serialized, null, "icon_color_id", (System.UInt32)model.icon_color_id );
@@ -769,12 +775,13 @@ namespace SteelSeries {
             /// <param name="maxValue">Maximum value</param>
             /// <param name="iconId">Identifies an icon that will be show in SteelSeries Engine for this event</param>
             /// <param name="handlers">An array of handlers for this event</param>
-            public void BindEvent( string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId, AbstractHandler[] handlers ) {
+            /// <param name="valueOptional">f true, handlers will be processed on every event update with no regard to update value</param>
+            public void BindEvent( string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId, AbstractHandler[] handlers, bool valueOptional = false ) {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActive() ) return;
 
                 QueueMsgBindEvent msg = new QueueMsgBindEvent {
-                    data = new Bind_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId, handlers )
+                    data = new Bind_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId, handlers, valueOptional )
                 };
 
                 // let handlers do work
@@ -798,12 +805,13 @@ namespace SteelSeries {
             /// <param name="minValue">Minimum value</param>
             /// <param name="maxValue">Maximum value</param>
             /// <param name="iconId">Identifies an icon that will be show in SteelSeries Engine for this event</param>
-            public void RegisterEvent( string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId ) {
+            /// <param name="valueOptional">f true, handlers will be processed on every event update with no regard to update value</param>
+            public void RegisterEvent( string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId, bool valueOptional = false ) {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActive() ) return;
 
                 QueueMsgRegisterEvent msg = new QueueMsgRegisterEvent {
-                    data = new Register_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId )
+                    data = new Register_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId, valueOptional )
                 };
 
                 _mMsgQueue.PEnqueue( msg );
