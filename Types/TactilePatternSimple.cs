@@ -40,7 +40,7 @@ namespace SteelSeries {
             }
 
             private static TactilePatternSimple _new() {
-                TactilePatternSimple ps = UnityEngine.ScriptableObject.CreateInstance< TactilePatternSimple >();
+                TactilePatternSimple ps = CreateInstance< TactilePatternSimple >();
                 return ps;
             }
 

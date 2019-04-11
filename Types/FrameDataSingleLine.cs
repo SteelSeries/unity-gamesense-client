@@ -46,11 +46,7 @@ namespace SteelSeries {
             }
         }
 
-        class FrameDataSingleLineConverter : FullSerializer.fsDirectConverter< FrameDataSingleLine > {
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref FrameDataSingleLine model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class FrameDataSingleLineConverter : Converter< FrameDataSingleLine > {
             protected override FullSerializer.fsResult DoSerialize( FrameDataSingleLine model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
 
                 model.lineData.DecorateSerialized( serialized );

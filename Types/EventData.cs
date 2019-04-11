@@ -38,11 +38,7 @@ namespace SteelSeries {
         }
 
 
-        class EventDataConverter : FullSerializer.fsDirectConverter< EventData > {
-            protected override FullSerializer.fsResult DoDeserialize( Dictionary< string, FullSerializer.fsData > data, ref EventData model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class EventDataConverter : Converter< EventData > {
             protected override FullSerializer.fsResult DoSerialize( EventData model, Dictionary< string, FullSerializer.fsData > serialized ) {
 
                 SerializeMember( serialized, null, "value", model.value );

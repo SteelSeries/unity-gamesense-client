@@ -50,12 +50,7 @@ namespace SteelSeries {
 
         }
 
-        class RateStaticConverter : FullSerializer.fsDirectConverter< RateStatic > {
-
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref RateStatic model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class RateStaticConverter : Converter< RateStatic > {
             protected override FullSerializer.fsResult DoSerialize( RateStatic model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
 
                 SerializeMember( serialized, null, "frequency", model.frequency );
@@ -63,7 +58,6 @@ namespace SteelSeries {
 
                 return FullSerializer.fsResult.Success;
             }
-
         }
 
     }

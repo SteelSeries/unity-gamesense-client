@@ -106,11 +106,7 @@ namespace SteelSeries {
         }
 
 
-        class ScreenHandlerConverter : FullSerializer.fsDirectConverter< ScreenHandler > {
-            protected override FullSerializer.fsResult DoDeserialize( Dictionary< string, FullSerializer.fsData > data, ref ScreenHandler model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class ScreenHandlerConverter : Converter< ScreenHandler > {
             protected override FullSerializer.fsResult DoSerialize( ScreenHandler model, Dictionary< string, FullSerializer.fsData > serialized ) {
 
                 SerializeMember( serialized, null, "device-type", model.deviceZone.device );

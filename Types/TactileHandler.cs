@@ -30,12 +30,6 @@ namespace SteelSeries {
 
     namespace GameSense {
 
-        // TODO
-        // deivce-type: tactile
-        // mode: "vibrate"
-        // pattern: pattern data - always an array, delay optional or 0 for no delay
-        // rate: same as color range
-        // zone: required "one"
 
         [FullSerializer.fsObject(Converter = typeof(TactileHandlerConverter))]
         [UnityEngine.CreateAssetMenu(fileName = "TactileHandler", menuName = "GameSense/Handlers/Tactile Handler")]
@@ -127,11 +121,7 @@ namespace SteelSeries {
         }
 
 
-        class TactileHandlerConverter : FullSerializer.fsDirectConverter< TactileHandler > {
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref TactileHandler model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class TactileHandlerConverter : Converter< TactileHandler > {
             protected override FullSerializer.fsResult DoSerialize( TactileHandler model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
                 // TODO check result of each
                 SerializeMember< string >( serialized, null, "device-type", model.deviceZone.device );

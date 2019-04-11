@@ -104,11 +104,7 @@ namespace SteelSeries {
         }
 
 
-        class FrameDataImageConverter : FullSerializer.fsDirectConverter< FrameDataImage > {
-            protected override FullSerializer.fsResult DoDeserialize( Dictionary< string, FullSerializer.fsData > data, ref FrameDataImage model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class FrameDataImageConverter : Converter< FrameDataImage > {
             protected override FullSerializer.fsResult DoSerialize( FrameDataImage model, Dictionary< string, FullSerializer.fsData > serialized ) {
 
                 if ( model.deviceZone == null ) {

@@ -167,11 +167,7 @@ namespace SteelSeries {
         }
 
 
-        class ObjectVariantConverter : FullSerializer.fsDirectConverter< ObjectVariant > {
-            protected override FullSerializer.fsResult DoDeserialize( Dictionary< string, FullSerializer.fsData > data, ref ObjectVariant model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class ObjectVariantConverter : Converter< ObjectVariant > {
             protected override FullSerializer.fsResult DoSerialize( ObjectVariant model, Dictionary< string, FullSerializer.fsData > serialized ) {
 
                 foreach ( var prop in model ) {
@@ -183,11 +179,7 @@ namespace SteelSeries {
         }
 
 
-        class ContextFrameObjectConverter : FullSerializer.fsDirectConverter< ContextFrameObject > {
-            protected override FullSerializer.fsResult DoDeserialize( Dictionary< string, FullSerializer.fsData > data, ref ContextFrameObject model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class ContextFrameObjectConverter : Converter< ContextFrameObject > {
             protected override FullSerializer.fsResult DoSerialize( ContextFrameObject model, Dictionary< string, FullSerializer.fsData > serialized ) {
                 FullSerializer.fsData data;
                 ObjectVariantConverter converter = new ObjectVariantConverter();
@@ -198,7 +190,6 @@ namespace SteelSeries {
                 foreach ( var prop in props ) {
                     serialized.Add( prop.Key, prop.Value );
                 }
-
 
                 return FullSerializer.fsResult.Success;
             }

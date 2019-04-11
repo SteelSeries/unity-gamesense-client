@@ -61,7 +61,7 @@ namespace SteelSeries {
             }
 
             [FullSerializer.fsObject(Converter = typeof(BindEventConverter))]
-            [System.Serializable] public class Bind_Event {
+            [System.Serializable] sealed public class Bind_Event {
 
                 [System.NonSerialized] public string game;
                 public string eventName;
@@ -83,7 +83,7 @@ namespace SteelSeries {
             }
 
             [FullSerializer.fsObject(Converter = typeof(RegisterEventConverter))]
-            class Register_Event {
+            sealed class Register_Event {
 
                 [System.NonSerialized] public string game;
                 public string eventName;
@@ -103,20 +103,20 @@ namespace SteelSeries {
             }
 
             [FullSerializer.fsObject(Converter = typeof(SendEventConverter))]
-            class Send_Event {
+            sealed class Send_Event {
                 public string game;
                 public string event_name;
                 public EventData data;
             }
 
             [FullSerializer.fsObject(Converter = typeof(RegisterGameConverter))]
-            class Register_Game {
+            sealed class Register_Game {
                 public string game;
                 public string game_display_name;
                 public string developer;
             }
 
-            class Game {
+            sealed class Game {
                 public string game;
                 public Game( string gameName ) {
                     game = gameName;
@@ -124,11 +124,7 @@ namespace SteelSeries {
             }
 
 
-            class BindEventConverter : FullSerializer.fsDirectConverter< Bind_Event > {
-                protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref Bind_Event model ) {
-                    return FullSerializer.fsResult.Fail( "Not implemented" );
-                }
-
+            class BindEventConverter : Converter< Bind_Event > {
                 protected override FullSerializer.fsResult DoSerialize( Bind_Event model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
 
                     SerializeMember( serialized, null, "game", model.game.ToUpper() );
@@ -143,11 +139,7 @@ namespace SteelSeries {
                 }
             }
 
-            class RegisterEventConverter : FullSerializer.fsDirectConverter< Register_Event > {
-                protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref Register_Event model ) {
-                    return FullSerializer.fsResult.Fail( "Not implemented" );
-                }
-
+            class RegisterEventConverter : Converter< Register_Event > {
                 protected override FullSerializer.fsResult DoSerialize( Register_Event model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
 
                     SerializeMember( serialized, null, "game", model.game.ToUpper() );
@@ -161,11 +153,7 @@ namespace SteelSeries {
                 }
             }
 
-            class SendEventConverter : FullSerializer.fsDirectConverter< Send_Event > {
-                protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref Send_Event model ) {
-                    return FullSerializer.fsResult.Fail( "Not implemented" );
-                }
-
+            class SendEventConverter : Converter< Send_Event > {
                 protected override FullSerializer.fsResult DoSerialize( Send_Event model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
 
                     SerializeMember< string >( serialized, null, "game", model.game );
@@ -176,11 +164,7 @@ namespace SteelSeries {
                 }
             }
 
-            class RegisterGameConverter : FullSerializer.fsDirectConverter< Register_Game > {
-                protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref Register_Game model ) {
-                    return FullSerializer.fsResult.Fail( "Not implemented" );
-                }
-
+            class RegisterGameConverter : Converter< Register_Game > {
                 protected override FullSerializer.fsResult DoSerialize( Register_Game model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
 
                     SerializeMember( serialized, null, "game", model.game );
@@ -192,70 +176,68 @@ namespace SteelSeries {
             }
 
 
-            abstract class QueueMsg {
-                protected object _data;
-                public abstract object data { get; set; }
+            abstract class AbstractQueueMsg {
                 public abstract System.Uri uri { get; }
                 public abstract bool IsCritical();
+                public abstract string ToJson( FullSerializer.fsSerializer serializer );
             }
 
-            class QueueMsgRegisterGame : QueueMsg {
+            abstract class QueueMsg< T > : AbstractQueueMsg {
+                public T data { get; set; }
+                public override string ToJson( FullSerializer.fsSerializer serializer ) {
+                    string serialized = null;
+                    FullSerializer.fsData fsData;
+                    FullSerializer.fsResult fsResult;
+
+                    fsResult = serializer.TrySerialize< T >( data, out fsData );
+
+                    if ( fsResult.Succeeded ) {
+#if SS_DEBUG
+                        serialized = FullSerializer.fsJsonPrinter.PrettyJson( fsData );
+#else
+                        serialized = FullSerializer.fsJsonPrinter.CompressedJson( fsData );
+#endif
+                    } else {
+                        throw new System.Exception( "Failed serializing object: " + data.ToString() );
+                    }
+
+                    return serialized;
+                }
+            }
+
+            class QueueMsgRegisterGame : QueueMsg< Register_Game > {
                 public static System.Uri _uri;
                 public override System.Uri uri { get { return _uri; } }
-                public override object data {
-                    get { return _data as Register_Game; }
-                    set { _data = value; }
-                }
                 public override bool IsCritical() { return true; }
             }
 
-            class QueueMsgBindEvent : QueueMsg {
+            class QueueMsgBindEvent : QueueMsg< Bind_Event > {
                 public static System.Uri _uri;
                 public override System.Uri uri { get { return _uri; } }
-                public override object data {
-                    get { return _data as Bind_Event; }
-                    set { _data = value; }
-                }
                 public override bool IsCritical() { return true; }
             }
 
-            class QueueMsgRegisterEvent : QueueMsg {
+            class QueueMsgRegisterEvent : QueueMsg< Register_Event > {
                 public static System.Uri _uri;
                 public override System.Uri uri { get { return _uri; } }
-                public override object data {
-                    get { return _data as Register_Event; }
-                    set { _data = value; }
-                }
                 public override bool IsCritical() { return true; }
             }
 
-            class QueueMsgSendEvent : QueueMsg {
+            class QueueMsgSendEvent : QueueMsg< Send_Event > {
                 public static System.Uri _uri;
                 public override System.Uri uri { get { return _uri; } }
-                public override object data {
-                    get { return _data as Send_Event; }
-                    set { _data = value; }
-                }
                 public override bool IsCritical() { return false; }
             }
 
-            class QueueMsgSendHeartbeat : QueueMsg {
+            class QueueMsgSendHeartbeat : QueueMsg< Game > {
                 public static System.Uri _uri;
                 public override System.Uri uri { get { return _uri; } }
-                public override object data {
-                    get { return _data as Game; }
-                    set { _data = value; }
-                }
                 public override bool IsCritical() { return false; }
             }
 
-            class QueueMsgRemoveGame : QueueMsg {
+            class QueueMsgRemoveGame : QueueMsg< Game > {
                 public static System.Uri _uri;
                 public override System.Uri uri { get { return _uri; } }
-                public override object data {
-                    get { return _data as Game; }
-                    set { _data = value; }
-                }
                 public override bool IsCritical() { return false; }
             }
 
@@ -297,7 +279,7 @@ namespace SteelSeries {
 
             private System.Threading.Thread _mGameSenseWrk;
             private bool _mGameSenseWrkShouldRun;
-            private LocklessQueue< QueueMsg > _mMsgQueue;
+            private LocklessQueue< AbstractQueueMsg > _mMsgQueue;
 
             private FullSerializer.fsSerializer _mSerializer;
 
@@ -454,31 +436,10 @@ namespace SteelSeries {
             }
 
 
-            private string _toJSON< T >( T obj ) {
-                string serialized = null;
-                FullSerializer.fsData fsData;
-                FullSerializer.fsResult fsResult;
-
-                fsResult = _mSerializer.TrySerialize< T >( obj, out fsData );
-
-                if ( fsResult.Succeeded ) {
-#if SS_DEBUG
-                    serialized = FullSerializer.fsJsonPrinter.PrettyJson( fsData );
-#else
-                    serialized = FullSerializer.fsJsonPrinter.CompressedJson( fsData );
-#endif
-                } else {
-                    throw new System.Exception( "Failed serializing object: " + obj.ToString() );
-                }
-
-                return serialized;
-            }
-
-
             // parse and send msg
             // will raise an exception on any failure
-            private void _sendMsg( QueueMsg msg ) {
-                string data = _toJSON( msg.data );
+            private void _sendMsg( AbstractQueueMsg msg ) {
+                string data = msg.ToJson( _mSerializer );
                 _logDbgMsg( data );
 
                 try {
@@ -525,7 +486,7 @@ namespace SteelSeries {
                 // TODO need to throttle this so we do not overflow the queue
                 //      temporarily mitigated by increasing the queue size
                 foreach ( Bind_Event be in Events ) {
-                    QueueMsg msg;
+                    AbstractQueueMsg msg;
 
                     if ( be.handlers == null || be.handlers.Length == 0 ) {
 
@@ -556,7 +517,7 @@ namespace SteelSeries {
 
 
             private void _gamesenseWrk() {
-                QueueMsg pendingMsg = null;
+                AbstractQueueMsg pendingMsg = null;
                 System.Diagnostics.Stopwatch tLastMsg = new System.Diagnostics.Stopwatch();
                 tLastMsg.Start();
 
@@ -568,7 +529,7 @@ namespace SteelSeries {
                         case ClientState.Active:
 
                             // see if there is any message to process
-                            QueueMsg msg;
+                            AbstractQueueMsg msg;
                             while ( (msg = _mMsgQueue.CDequeue()) == null ) {
                                 // no messages in queue, sleep a bit before checking again
                                 System.Threading.Thread.Sleep( _MsgCheckInterval );
@@ -689,7 +650,7 @@ namespace SteelSeries {
 
                 // initialize
                 _mSerializer = new FullSerializer.fsSerializer();
-                _mMsgQueue = new LocklessQueue< QueueMsg >( _MsgQueueSize );
+                _mMsgQueue = new LocklessQueue< AbstractQueueMsg >( _MsgQueueSize );
                 _mGameSenseWrk = new System.Threading.Thread( _gamesenseWrk ); // check for exceptions
                 _mGameSenseWrkShouldRun = true;
                 _setClientState( ClientState.Probing );

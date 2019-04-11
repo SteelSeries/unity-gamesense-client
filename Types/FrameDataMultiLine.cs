@@ -51,11 +51,7 @@ namespace SteelSeries {
             }
         }
 
-        class FrameDataMultiLineConverter : FullSerializer.fsDirectConverter< FrameDataMultiLine > {
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref FrameDataMultiLine model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class FrameDataMultiLineConverter : Converter< FrameDataMultiLine > {
             protected override FullSerializer.fsResult DoSerialize( FrameDataMultiLine model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
 
                 SerializeMember( serialized, null, "lines", model.lines );

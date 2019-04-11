@@ -59,7 +59,7 @@ namespace SteelSeries {
 
 
             private static ColorHandler _new() {
-                ColorHandler ch = UnityEngine.ScriptableObject.CreateInstance< ColorHandler >();
+                ColorHandler ch = CreateInstance< ColorHandler >();
                 return ch;
             }
 
@@ -127,13 +127,9 @@ namespace SteelSeries {
         }
 
 
-        class ColorHandlerConverter : FullSerializer.fsDirectConverter< ColorHandler > {
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref ColorHandler model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class ColorHandlerConverter : Converter< ColorHandler > {
             protected override FullSerializer.fsResult DoSerialize( ColorHandler model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                // TODO check result of each
+
                 SerializeMember< string >( serialized, null, "device-type", model.deviceZone.device );
 
                 if ( model.deviceZone.HasCustomZone() ) {

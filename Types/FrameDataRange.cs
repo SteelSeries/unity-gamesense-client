@@ -54,11 +54,7 @@ namespace SteelSeries {
             }
         }
 
-        class FrameDataRangeConverter : FullSerializer.fsDirectConverter< FrameDataRange > {
-            protected override FullSerializer.fsResult DoDeserialize( Dictionary< string, FullSerializer.fsData > data, ref FrameDataRange model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class FrameDataRangeConverter : Converter< FrameDataRange > {
             protected override FullSerializer.fsResult DoSerialize( FrameDataRange model, Dictionary< string, FullSerializer.fsData > serialized ) {
 
                 SerializeMember( serialized, null, "low", model.low );

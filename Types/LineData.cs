@@ -180,11 +180,7 @@ namespace SteelSeries {
         }
 
 
-        class LineDataConverter : FullSerializer.fsDirectConverter< LineData > {
-            protected override FullSerializer.fsResult DoDeserialize( Dictionary< string, FullSerializer.fsData > data, ref LineData model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class LineDataConverter : Converter< LineData > {
             protected override FullSerializer.fsResult DoSerialize( LineData model, Dictionary< string, FullSerializer.fsData > serialized ) {
                 model.DecorateSerialized( serialized );
                 return FullSerializer.fsResult.Success;
