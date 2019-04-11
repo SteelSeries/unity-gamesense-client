@@ -150,7 +150,10 @@ namespace SteelSeries {
                     case ColorEffect.Range: SerializeMember< ColorRange[] >( serialized, null, "color", model.color_range.ranges ); break;
                 }
 
-                SerializeMember< AbstractRate >( serialized, null, "rate", model.rate );
+                switch ( model.RateMode ) {
+                    case RateMode.Static: SerializeMember< RateStatic >( serialized, null, "rate", model.rate_static ); break;
+                    case RateMode.Range: SerializeMember< RateRange >( serialized, null, "rate", model.rate_range ); break;
+                }
 
                 return FullSerializer.fsResult.Success;
             }
