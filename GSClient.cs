@@ -556,7 +556,7 @@ namespace SteelSeries {
 
                             // see if there is any message to process
                             QueueMsg msg;
-                            while ( (msg = _mMsgQueue.CDequeue()) == null ) {
+                            while ( (msg = _mMsgQueue.CDequeue()) == null && _mGameSenseWrkShouldRun ) {
                                 // no messages in queue, sleep a bit before checking again
                                 System.Threading.Thread.Sleep( _MsgCheckInterval );
 
@@ -567,6 +567,12 @@ namespace SteelSeries {
 
                                     break;
                                 }
+                            }
+                            
+                            // Make sure the top-level state is still active before attempting to send a message
+                            if (!_mGameSenseWrkShouldRun)
+                            {
+                              break;
                             }
 
                             try {
