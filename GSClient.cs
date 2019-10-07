@@ -361,8 +361,8 @@ namespace SteelSeries {
             }
 
 
-            private bool _isClientActive() {
-                return _mClientState == ClientState.Active;
+            private bool _isClientActiveOrProbing() {
+                return _mClientState == ClientState.Active || _mClientState == ClientState.Probing;
             }
 
 
@@ -767,7 +767,7 @@ namespace SteelSeries {
             /// <param name="handlers">An array of handlers for this event</param>
             public void BindEvent( string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId, AbstractHandler[] handlers ) {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
-                if ( !_isClientActive() ) return;
+                if ( !_isClientActiveOrProbing() ) return;
 
                 QueueMsgBindEvent msg = new QueueMsgBindEvent();
                 msg.data = new Bind_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId, handlers );
@@ -789,7 +789,7 @@ namespace SteelSeries {
             /// <param name="iconId">Identifies an icon that will be show in SteelSeries Engine for this event</param>
             public void RegisterEvent( string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId ) {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
-                if ( !_isClientActive() ) return;
+                if ( !_isClientActiveOrProbing() ) return;
 
                 QueueMsgRegisterEvent msg = new QueueMsgRegisterEvent();
                 msg.data = new Register_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId );
@@ -805,7 +805,7 @@ namespace SteelSeries {
             /// <param name="value">New value</param>
             public void SendEvent( string eventName, System.Int32 value ) {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
-                if ( !_isClientActive() ) return;
+                if ( !_isClientActiveOrProbing() ) return;
 
                 // TODO avoid mem allocations
                 Send_Event se = new Send_Event();
@@ -825,7 +825,7 @@ namespace SteelSeries {
             /// </summary>
             public void RemoveGame() {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
-                if ( !_isClientActive() ) return;
+                if ( !_isClientActiveOrProbing() ) return;
 
                 QueueMsgRemoveGame msg = new QueueMsgRemoveGame();
                 msg.data = new Game( GameName );
