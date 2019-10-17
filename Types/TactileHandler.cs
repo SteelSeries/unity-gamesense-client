@@ -136,7 +136,7 @@ namespace SteelSeries {
             protected override FullSerializer.fsResult DoSerialize( TactileHandler model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
                 // TODO check result of each
                 SerializeMember< string >( serialized, null, "device-type", model.deviceZone.device );
-                SerializeMember< string >( serialized, null, "zone", ((DeviceZone.AbstarctGenericTactile_Zone)model.deviceZone).zone );
+                SerializeMember< string >( serialized, null, "zone", ((DeviceZone.AbstractGenericTactile_Zone)model.deviceZone).zone );
                 SerializeMember< TactileMode >( serialized, null, "mode", model.mode );
 
                 switch ( model.pattern.PatternType() ) {

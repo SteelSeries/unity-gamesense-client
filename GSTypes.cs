@@ -63,16 +63,21 @@ namespace SteelSeries {
             Mana        = 14,   // Mana/Potion
             Clock       = 15,   // Clock
             Lightning   = 16,   // Lightning
-            Item        = 17    // Item/Backpack
+            Item        = 17,   // Item/Backpack
+            AtSymbol    = 18,   // @ symbol
+            Muted       = 19,   // Muted
+            Talking     = 20,   // Talking
+            Connect     = 21,   // Connect
+            Disconnect  = 22,   // Disconnect
+            Music       = 23,   // Music
+            Play        = 24,   // Play
+            Pause       = 25    // Pause
         }
 
 
         [System.Serializable] public struct EventData {
             public System.Int32 value;
         }
-
-
-
 
         // ******************** RATE ********************
 
@@ -176,6 +181,14 @@ namespace SteelSeries {
                 public const string One = "one";
             }
 
+            class ScreenZone {
+
+                public const string Screened = "screened";
+                public const string Screened_128x36 = "screened-128x36";
+                public const string Screened_128x40 = "screened-128x40";
+                public const string Screened_128x48 = "screened-128x48";
+                public const string Screened_128x52 = "screened-128x52";
+            }
 
             abstract public class AbstractDevice_Zone : UnityEngine.ScriptableObject {
                 protected string _device;
@@ -230,10 +243,21 @@ namespace SteelSeries {
             }
 
             // tactile generic
-            public class AbstarctGenericTactile_Zone : AbstractTactileDevice_Zone {
+            public class AbstractGenericTactile_Zone : AbstractTactileDevice_Zone {
                 protected string _zone;
                 public string zone { get { return _zone; } }
-                public AbstarctGenericTactile_Zone( string device, string zone ) : base( device ) { _zone = zone; }
+                public AbstractGenericTactile_Zone( string device, string zone ) : base( device ) { _zone = zone; }
+            }
+
+            // screen
+            abstract public class AbstractScreenDevice_Zone : AbstractDevice_Zone {
+                public AbstractScreenDevice_Zone(string device) : base( device ) { }
+            }
+
+            public class AbstractGenericScreen_Zone : AbstractScreenDevice_Zone {
+                protected string _zone;
+                public string zone { get { return _zone; } }
+                public AbstractGenericScreen_Zone( string device, string zone ) : base(device) { _zone = zone; }
             }
 
 
@@ -608,6 +632,19 @@ namespace SteelSeries {
 
         public abstract class TactilePattern_Nonrecursive: AbstractTactilePattern { }
 
-    }
 
+        // ******************** SCREEN ********************
+        
+        public abstract class AbstractScreenData : UnityEngine.ScriptableObject { }
+
+        public abstract class AbstractGenericScreenData : AbstractScreenData {
+            public int length_millis;       //optional
+            public EventIconId icon;        //optional
+            public dynamic repeats = false; //optional
+        }
+
+        public enum ScreenMode {
+            screen
+        }
+    }
 }

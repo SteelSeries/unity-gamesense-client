@@ -28,6 +28,7 @@
 
 using System.IO;
 using UnityEngine;
+using System.Collections.Generic;
 
 
 namespace SteelSeries {
@@ -297,7 +298,7 @@ namespace SteelSeries {
 
             private System.Uri _uriBase;
 
-
+            private HashSet<string> _mEventList;
 
 
             // ******************** PROPS ********************
@@ -520,6 +521,7 @@ namespace SteelSeries {
                 // TODO need to throttle this so we do not overflow the queue
                 //      temporarily mitigated by increasing the queue size
                 foreach ( Bind_Event be in Events ) {
+                    _mEventList.Add(be.eventName);
                     QueueMsg msg;
 
                     if ( be.handlers == null || be.handlers.Length == 0 ) {
@@ -685,6 +687,7 @@ namespace SteelSeries {
                 _mGameSenseWrk = new System.Threading.Thread( _gamesenseWrk ); // check for exceptions
                 _mGameSenseWrkShouldRun = true;
                 _setClientState( ClientState.Probing );
+                _mEventList = new HashSet<string>();
 
                 try {
                     _mGameSenseWrk.Start();
@@ -768,6 +771,7 @@ namespace SteelSeries {
             public void BindEvent( string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId, AbstractHandler[] handlers ) {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActiveOrProbing() ) return;
+                _mEventList.Add(eventName);
 
                 QueueMsgBindEvent msg = new QueueMsgBindEvent();
                 msg.data = new Bind_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId, handlers );
@@ -790,6 +794,7 @@ namespace SteelSeries {
             public void RegisterEvent( string eventName, System.Int32 minValue, System.Int32 maxValue, EventIconId iconId ) {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActiveOrProbing() ) return;
+                _mEventList.Add(eventName);
 
                 QueueMsgRegisterEvent msg = new QueueMsgRegisterEvent();
                 msg.data = new Register_Event( GameName.ToUpper(), eventName.ToUpper(), minValue, maxValue, iconId );
@@ -806,6 +811,9 @@ namespace SteelSeries {
             public void SendEvent( string eventName, System.Int32 value ) {
 #if (UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX) && !SS_GAMESENSE_DISABLED
                 if ( !_isClientActiveOrProbing() ) return;
+                if ( !_mEventList.Contains(eventName) ) {
+                    _logWarning("Attempting to send unregistered event: " + eventName);
+                }
 
                 // TODO avoid mem allocations
                 Send_Event se = new Send_Event();

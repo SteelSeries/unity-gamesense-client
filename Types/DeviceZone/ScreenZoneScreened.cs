@@ -1,9 +1,8 @@
-/*
- * TactileZoneOne.cs
+﻿/*
+ * ScreenZoneScreened.cs
  *
- * authors: Tomasz Rybiarczyk (tomasz.rybiarczyk@steelseries.com)
- *
- *
+ * authors: Ellie Quirini (gabriella.quirini@steelseries.com)
+ * 
  * Copyright (c) 2016 SteelSeries
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -32,10 +31,10 @@ namespace SteelSeries {
 
         namespace DeviceZone {
 
-            [UnityEngine.CreateAssetMenu(fileName = "TactileZoneOne", menuName = "GameSense/Device - Zone/Tactile/Generic/One")]
-            public class TactileZoneOne : AbstractGenericTactile_Zone {
+            [UnityEngine.CreateAssetMenu(fileName = "ScreenZoneScreened", menuName = "GameSense/Device - Zone/Screen/Screened")]
+            public class ScreenZoneScreened : AbstractGenericScreen_Zone {
 
-                public TactileZoneOne() : base( "tactile", TactileZone.One ) { }
+                public ScreenZoneScreened() : base(ScreenZone.Screened, "one") { }
 
             };
 

@@ -1,8 +1,7 @@
-/*
- * TactileZoneOne.cs
+﻿/*
+ * ScreenZone128x36.cs
  *
- * authors: Tomasz Rybiarczyk (tomasz.rybiarczyk@steelseries.com)
- *
+ * authors: Ellie Quirini (gabriella.quirini@steelseries.com)
  *
  * Copyright (c) 2016 SteelSeries
  *
@@ -32,10 +31,10 @@ namespace SteelSeries {
 
         namespace DeviceZone {
 
-            [UnityEngine.CreateAssetMenu(fileName = "TactileZoneOne", menuName = "GameSense/Device - Zone/Tactile/Generic/One")]
-            public class TactileZoneOne : AbstractGenericTactile_Zone {
+            [UnityEngine.CreateAssetMenu(fileName = "ScreenZone128x36", menuName = "GameSense/Device - Zone/Screen/Generic/128x36")]
+            public class ScreenZone128x36 : AbstractGenericScreen_Zone {
 
-                public TactileZoneOne() : base( "tactile", TactileZone.One ) { }
+                public ScreenZone128x36() : base(ScreenZone.Screened_128x36, "one") { }
 
             };
 
