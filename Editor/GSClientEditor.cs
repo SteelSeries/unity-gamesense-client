@@ -26,6 +26,7 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using UnityEngine;
 using UnityEditor;
 
 namespace SteelSeries {
@@ -155,14 +156,14 @@ namespace SteelSeries {
 
             SerializedProperty gameName;
             SerializedProperty gameDisplayName;
-            SerializedProperty iconColor;
+            SerializedProperty developer;
             SerializedProperty events;
 
             void OnEnable() {
 
                 gameName = serializedObject.FindProperty( "GameName" );
                 gameDisplayName = serializedObject.FindProperty( "GameDisplayName" );
-                iconColor = serializedObject.FindProperty( "IconColor" );
+                developer = serializedObject.FindProperty( "Developer" );
                 events = serializedObject.FindProperty( "Events" );
 
             }
@@ -175,7 +176,7 @@ namespace SteelSeries {
 
                 EditorGUILayout.PropertyField( gameName );
                 EditorGUILayout.PropertyField( gameDisplayName );
-                EditorGUILayout.PropertyField( iconColor );
+                EditorGUILayout.PropertyField( developer );
 
                 EditorGUILayout.PropertyField( events, true );
 
@@ -183,6 +184,261 @@ namespace SteelSeries {
 
             }
 
+        }
+
+
+        class GSClientEditorUtils {
+            public static float GetPropertyHeight( SerializedProperty prop, GUIContent label ) {
+
+                float height = 0;
+
+                // get sibling
+                SerializedProperty endProp = prop.GetEndProperty();
+
+                // move onto the first child property
+                prop.NextVisible( true );
+
+                do {
+                    height += EditorGUI.GetPropertyHeight( prop, label, true ) + EditorGUIUtility.standardVerticalSpacing;
+                    prop.NextVisible( false );
+                } while ( !SerializedProperty.EqualContents( prop, endProp ) );
+
+                return height;
+            }
+        }
+
+
+        [CustomPropertyDrawer( typeof( FrameModifiers ) )]
+        public class FrameModifiersEditor : PropertyDrawer {
+
+            SerializedProperty spLength;
+            SerializedProperty spRepeats;
+            SerializedProperty spRepeatCount;
+
+            public override void OnGUI(Rect pos, SerializedProperty prop, GUIContent label) {
+
+                spLength = prop.FindPropertyRelative( "length_millis" );
+                spRepeats = prop.FindPropertyRelative( "_repeats" );
+                spRepeatCount = prop.FindPropertyRelative( "_repeatCount" );
+
+                if ( spLength == null )
+                    return;
+
+                EditorGUI.BeginProperty(pos, label, prop);
+
+                var rectLength = new Rect( pos.x, pos.y, pos.width, EditorGUI.GetPropertyHeight( spLength ) );
+                var rectRepeats = new Rect( pos.x,
+                                            rectLength.y+rectLength.height + EditorGUIUtility.standardVerticalSpacing,
+                                            pos.width/2,
+                                            EditorGUI.GetPropertyHeight( spRepeats ) );
+                var rectRepCount = new Rect( pos.x+pos.width/2,
+                                             rectRepeats.y,
+                                             pos.width/2,
+                                             EditorGUI.GetPropertyHeight( spRepeatCount ) );
+                
+                EditorGUI.PropertyField( rectLength, spLength, new GUIContent( "Length (ms)" ) );
+                EditorGUI.PropertyField( rectRepeats, spRepeats, new GUIContent( "Repeats" ) );
+                
+                if ( spRepeats.boolValue == true ) {
+                    EditorGUI.PropertyField( rectRepCount, spRepeatCount, new GUIContent( "Repeat Count" ) );
+                }
+
+                EditorGUI.EndProperty();
+            }
+
+            public override float GetPropertyHeight( SerializedProperty prop, GUIContent label ) {
+                return GSClientEditorUtils.GetPropertyHeight( prop, label );
+            }
+        }
+
+
+        [CustomPropertyDrawer( typeof( LineDataAccessor ), true )]
+        public class LineDataAccessorEditor : PropertyDrawer {
+
+            LineDataAccessor.Type type;
+            SerializedProperty spLdaType;
+            SerializedProperty spLdaValue;
+
+
+            public override void OnGUI(Rect pos, SerializedProperty prop, GUIContent label) {
+
+                spLdaType = prop.FindPropertyRelative( "type" );
+                spLdaValue = prop.FindPropertyRelative( "value" );
+
+                if ( spLdaType == null )
+                    return;
+
+                if ( spLdaValue == null )
+                    return;
+               
+                EditorGUI.BeginProperty(pos, label, prop);
+
+                var rectType = new Rect( pos.x,
+                                         pos.y,
+                                         pos.width,
+                                         EditorGUI.GetPropertyHeight( spLdaType ) );
+                var rectKey = new Rect( pos.x,
+                                        rectType.y+rectType.height + EditorGUIUtility.standardVerticalSpacing,
+                                        pos.width,
+                                        EditorGUI.GetPropertyHeight( spLdaValue )  );
+
+                EditorGUI.PropertyField( rectType, spLdaType );
+
+                type = ( LineDataAccessor.Type )spLdaType.enumValueIndex;               
+
+                switch ( type ) {
+
+                    case LineDataAccessor.Type.FrameKey:
+                        EditorGUI.PropertyField( rectKey, spLdaValue, new GUIContent( "Key" ) );
+                        break;
+
+                    case LineDataAccessor.Type.GoLispExpr:
+                        EditorGUI.PropertyField( rectKey, spLdaValue, new GUIContent( "Expression" ) );
+                        break;
+
+                }
+
+                EditorGUI.EndProperty();
+            }
+
+            public override float GetPropertyHeight( SerializedProperty prop, GUIContent label ) {
+                return GSClientEditorUtils.GetPropertyHeight( prop, label );
+            }
+
+        }
+
+
+        [CustomPropertyDrawer( typeof( LineDataText ), true )]
+        public class LineDataTextEditor : PropertyDrawer {
+
+            SerializedProperty spPrefix;
+            SerializedProperty spSuffix;
+            SerializedProperty spBold;
+            SerializedProperty spWrap;
+
+
+            public override void OnGUI(Rect pos, SerializedProperty prop, GUIContent label) {
+
+                spPrefix = prop.FindPropertyRelative( "prefix" );
+                spSuffix = prop.FindPropertyRelative( "suffix" );
+                spBold = prop.FindPropertyRelative( "bold" );
+                spWrap = prop.FindPropertyRelative( "wrap" );
+
+                if ( spPrefix == null )
+                    return;
+
+                if ( spSuffix == null )
+                    return;
+
+                if ( spBold == null )
+                    return;
+
+                if ( spWrap == null )
+                    return;
+               
+                EditorGUI.BeginProperty(pos, label, prop);
+
+                var rectPrefix = new Rect( pos.x,
+                                           pos.y,
+                                           pos.width,
+                                           EditorGUI.GetPropertyHeight( spPrefix ) );
+                var rectSuffix = new Rect( pos.x,
+                                           rectPrefix.y + rectPrefix.height + EditorGUIUtility.standardVerticalSpacing,
+                                           pos.width,
+                                           EditorGUI.GetPropertyHeight( spSuffix ) );
+                var rectBold = new Rect( pos.x,
+                                         rectSuffix.y + rectSuffix.height + EditorGUIUtility.standardVerticalSpacing,
+                                         pos.width,
+                                         EditorGUI.GetPropertyHeight( spBold ) );
+                var rectWrap = new Rect( pos.x,
+                                         rectBold.y + rectBold.height + EditorGUIUtility.standardVerticalSpacing,
+                                         pos.width,
+                                         EditorGUI.GetPropertyHeight( spWrap ) );
+                
+                EditorGUI.PropertyField( rectPrefix, spPrefix, new GUIContent( spPrefix.displayName ) );
+                EditorGUI.PropertyField( rectSuffix, spSuffix, new GUIContent( spSuffix.displayName ) );
+                EditorGUI.PropertyField( rectBold, spBold, new GUIContent( spBold.displayName ) );
+                EditorGUI.PropertyField( rectWrap, spWrap, new GUIContent( spWrap.displayName ) );
+
+                EditorGUI.EndProperty();
+            }
+
+            public override float GetPropertyHeight( SerializedProperty prop, GUIContent label ) {
+                return GSClientEditorUtils.GetPropertyHeight( prop, label );
+            }
+        }
+
+
+        [CustomPropertyDrawer( typeof( LineDataProgressBar ), true )]
+        public class LineDataProgressBarEditor : PropertyDrawer {
+
+            public override void OnGUI(Rect pos, SerializedProperty prop, GUIContent label) {
+               
+                EditorGUI.BeginProperty(pos, label, prop);
+                /* do not show anything */
+                EditorGUI.EndProperty();
+
+            }
+
+            public override float GetPropertyHeight( SerializedProperty prop, GUIContent label ) {
+                return 0;
+            }
+        }
+
+
+        [CustomEditor( typeof( LineData ), true )]
+        public class LineDataEditor : Editor {
+
+            LineData ld;
+            SerializedProperty spLdType;
+            SerializedProperty spTxt;
+            SerializedProperty spPb;
+            SerializedProperty spLdAccessor;
+
+            void OnEnable() {
+
+                ld = ( LineData )target;
+
+                spLdType = serializedObject.FindProperty( "type" );
+                spTxt = serializedObject.FindProperty( "_txt" );
+                spPb = serializedObject.FindProperty( "_pb" );
+                spLdAccessor = serializedObject.FindProperty( "accessor" );
+
+            }
+
+            public override void OnInspectorGUI() {
+
+                serializedObject.Update();
+
+                EditorGUILayout.LabelField( "Line Data:" );
+
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField( spLdType );
+                
+                switch ( ld.type ) {
+
+                    case LineData.Type.Text:
+                        EditorGUILayout.PropertyField( spTxt, false );
+                        break;
+
+                    case LineData.Type.ProgressBar:
+                        EditorGUILayout.PropertyField( spPb, false );
+                        break;
+                }
+
+                EditorGUI.indentLevel--;
+
+                EditorGUILayout.Space();
+                EditorGUILayout.LabelField( "Value Accessor:" );
+
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField( spLdAccessor, true );
+                EditorGUI.indentLevel--;
+
+                serializedObject.ApplyModifiedProperties();
+                EditorUtility.SetDirty( ld );
+
+            }
         }
 
     }

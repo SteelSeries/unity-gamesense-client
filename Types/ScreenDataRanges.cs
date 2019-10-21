@@ -1,10 +1,10 @@
-/*
- * TactilePatternSimple.cs
+﻿/*
+ * ScreenDataRanges.cs
  *
- * authors: Tomasz Rybiarczyk (tomasz.rybiarczyk@steelseries.com)
+ * authors: sharkgoesmad
  *
  *
- * Copyright (c) 2016 SteelSeries
+ * Copyright (c) 2019 SteelSeries
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -30,26 +30,24 @@ namespace SteelSeries {
 
     namespace GameSense {
 
-        [UnityEngine.CreateAssetMenu(fileName = "TactilePatternSimple", menuName = "GameSense/Tactile Patterns/Simple")]
-        public class TactilePatternSimple : TactilePattern_Nonrecursive {
+        [UnityEngine.CreateAssetMenu(fileName = "ScreenDataRanges", menuName = "GameSense/Screen Data/Ranges")]
+        public class ScreenDataRanges : AbstractScreenData {
+            public FrameDataRange[] datas;
 
-            public TactileEffectSimple[] pattern;
-
-            public override TactilePatternType PatternType() {
-                return TactilePatternType.Simple;
+            public ScreenDataRanges( FrameDataRange[] datas ) {
+                this.datas = datas;
             }
 
-            private static TactilePatternSimple _new() {
-                TactilePatternSimple ps = CreateInstance< TactilePatternSimple >();
-                return ps;
+            private static ScreenDataRanges _new() {
+                ScreenDataRanges sd = CreateInstance< ScreenDataRanges >();
+                return sd;
             }
 
-            public static TactilePatternSimple Create( TactileEffectSimple[] effects ) {
-                TactilePatternSimple ps = _new();
-                ps.pattern = effects;
-                return ps;
+            public static ScreenDataRanges Create( FrameDataRange[] datas ) {
+                ScreenDataRanges sd = _new();
+                sd.datas = datas;
+                return sd;
             }
-
         }
 
     }

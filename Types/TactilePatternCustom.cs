@@ -42,7 +42,7 @@ namespace SteelSeries {
             }
 
             private static TactilePatternCustom _new() {
-                TactilePatternCustom pc = UnityEngine.ScriptableObject.CreateInstance< TactilePatternCustom >();
+                TactilePatternCustom pc = CreateInstance< TactilePatternCustom >();
                 return pc;
             }
 

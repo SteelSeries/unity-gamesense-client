@@ -1,10 +1,10 @@
 /*
- * TactilePatternSimple.cs
+ * EventData.cs
  *
- * authors: Tomasz Rybiarczyk (tomasz.rybiarczyk@steelseries.com)
+ * authors: sharkgoesmad
  *
  *
- * Copyright (c) 2016 SteelSeries
+ * Copyright (c) 2019 SteelSeries
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -25,31 +25,27 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+ using System.Collections.Generic;
 
 namespace SteelSeries {
 
     namespace GameSense {
 
-        [UnityEngine.CreateAssetMenu(fileName = "TactilePatternSimple", menuName = "GameSense/Tactile Patterns/Simple")]
-        public class TactilePatternSimple : TactilePattern_Nonrecursive {
+        [FullSerializer.fsObject(Converter = typeof(EventDataConverter))]
+        [System.Serializable] public struct EventData {
+            public System.Int32 value;
+            public AbstractContextFrame frame;
+        }
 
-            public TactileEffectSimple[] pattern;
 
-            public override TactilePatternType PatternType() {
-                return TactilePatternType.Simple;
+        class EventDataConverter : Converter< EventData > {
+            protected override FullSerializer.fsResult DoSerialize( EventData model, Dictionary< string, FullSerializer.fsData > serialized ) {
+
+                SerializeMember( serialized, null, "value", model.value );
+                SerializeMember( serialized, null, "frame", model.frame );
+
+                return FullSerializer.fsResult.Success;
             }
-
-            private static TactilePatternSimple _new() {
-                TactilePatternSimple ps = CreateInstance< TactilePatternSimple >();
-                return ps;
-            }
-
-            public static TactilePatternSimple Create( TactileEffectSimple[] effects ) {
-                TactilePatternSimple ps = _new();
-                ps.pattern = effects;
-                return ps;
-            }
-
         }
 
     }

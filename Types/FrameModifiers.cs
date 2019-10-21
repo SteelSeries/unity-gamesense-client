@@ -1,10 +1,10 @@
-/*
- * TactilePatternSimple.cs
+﻿/*
+ * FrameModifiers.cs
  *
- * authors: Tomasz Rybiarczyk (tomasz.rybiarczyk@steelseries.com)
+ * authors: sharkgoesmad
  *
  *
- * Copyright (c) 2016 SteelSeries
+ * Copyright (c) 2019 SteelSeries
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -30,26 +30,36 @@ namespace SteelSeries {
 
     namespace GameSense {
 
-        [UnityEngine.CreateAssetMenu(fileName = "TactilePatternSimple", menuName = "GameSense/Tactile Patterns/Simple")]
-        public class TactilePatternSimple : TactilePattern_Nonrecursive {
+        [System.Serializable] public class FrameModifiers {
 
-            public TactileEffectSimple[] pattern;
+            [UnityEngine.SerializeField] private bool _repeats;
+            [UnityEngine.SerializeField] private System.UInt32 _repeatCount;
 
-            public override TactilePatternType PatternType() {
-                return TactilePatternType.Simple;
+            public System.UInt32 length_millis;
+            public System.UInt32 repeatCount {
+                get { return _repeatCount; }
+                set { _repeats = true; _repeatCount = value; }
             }
 
-            private static TactilePatternSimple _new() {
-                TactilePatternSimple ps = CreateInstance< TactilePatternSimple >();
-                return ps;
+            public bool repeats {
+                get { return _repeats; }
+                set {
+                    if ( value == false ) {
+                        _repeatCount = 0;
+                    }
+                    _repeats = value;
+                }
             }
 
-            public static TactilePatternSimple Create( TactileEffectSimple[] effects ) {
-                TactilePatternSimple ps = _new();
-                ps.pattern = effects;
-                return ps;
+            public FrameModifiers( System.UInt32 lengthMs, System.UInt32 repeatCount ) {
+                length_millis = lengthMs;
+                this.repeatCount = repeatCount;
             }
 
+            public FrameModifiers( System.UInt32 lengthMs, bool repeats ) {
+                length_millis = lengthMs;
+                this.repeats = repeats;
+            }
         }
 
     }
