@@ -35,7 +35,9 @@ namespace SteelSeries {
         [FullSerializer.fsObject(Converter = typeof(ScreenHandlerConverter))]
         [UnityEngine.CreateAssetMenu(fileName = "ScreenHandler", menuName = "GameSense/Handlers/Screen Handler")]
         [System.Serializable] public class ScreenHandler : AbstractHandler {
-            private ScreenDataType _screenDataType { get; set; }
+            private ScreenDataType _screenDataType {
+                get { if (datas is ScreenDataRanges) { return ScreenDataType.Range; } return ScreenDataType.Static; }
+            }
             public ScreenDataType screenDataType {
                 get { return _screenDataType; }
             }
@@ -48,15 +50,6 @@ namespace SteelSeries {
 
             // datas
             public AbstractScreenData datas;
-            public ScreenDataStatic data_static {
-                get { return datas as ScreenDataStatic; }
-                set { datas = value; _screenDataType = ScreenDataType.Static; }
-            }
-
-            public ScreenDataRanges data_ranges {
-                get { return datas as ScreenDataRanges; }
-                set { datas = value; _screenDataType = ScreenDataType.Range; }
-            }
 
             private static ScreenHandler _new() {
                 ScreenHandler sh = CreateInstance< ScreenHandler >();
@@ -72,13 +65,13 @@ namespace SteelSeries {
 
             public static ScreenHandler Create( DeviceZone.AbstractScreenDevice_Zone dz, ScreenMode mode, AbstractFrameData[] datas ) {
                 ScreenHandler sh = Create( dz, mode );
-                sh.data_static = ScreenDataStatic.Create( datas );
+                sh.datas= ScreenDataStatic.Create( datas );
                 return sh;
             }
 
             public static ScreenHandler Create( DeviceZone.AbstractScreenDevice_Zone dz, ScreenMode mode, FrameDataRange[] datas ) {
                 ScreenHandler sh = Create( dz, mode );
-                sh.data_ranges = ScreenDataRanges.Create( datas );
+                sh.datas = ScreenDataRanges.Create( datas );
                 return sh;
             }
 
@@ -90,13 +83,15 @@ namespace SteelSeries {
                 switch ( screenDataType ) {
 
                     case ScreenDataType.Static:
-                        foreach ( var d in data_static.datas ) {
+                        var static_datas = datas as ScreenDataStatic;
+                        foreach ( var d in static_datas.datas) {
                             d.Preprocess();
                         }
                         break;
 
                     case ScreenDataType.Range:
-                        foreach ( var d in data_ranges.datas ) {
+                        var range_datas = datas as ScreenDataRanges;
+                        foreach ( var d in range_datas.datas ) {
                             d.Preprocess();
                         }
                         break;
@@ -114,8 +109,8 @@ namespace SteelSeries {
                 SerializeMember( serialized, null, "mode", model.mode );
 
                 switch ( model.screenDataType ) {
-                    case ScreenDataType.Static: SerializeMember( serialized, null, "datas", model.data_static.datas ); break;
-                    case ScreenDataType.Range: SerializeMember( serialized, null, "datas", model.data_ranges.datas ); break;
+                    case ScreenDataType.Static: SerializeMember( serialized, null, "datas", (model.datas as ScreenDataStatic).datas ); break;
+                    case ScreenDataType.Range: SerializeMember( serialized, null, "datas", (model.datas as ScreenDataRanges).datas ); break;
                 }
 
                 return FullSerializer.fsResult.Success;
