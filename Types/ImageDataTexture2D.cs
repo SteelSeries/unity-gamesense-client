@@ -41,7 +41,7 @@ namespace SteelSeries {
             /// </summary>
             /// <param name="texture">Texture2D object</param>
             /// <returns>ImageDataTexture2D instance</returns>
-            public ImageDataTexture2D Create( Texture2D texture ) {
+            public static ImageDataTexture2D Create( Texture2D texture ) {
                 var id = CreateInstance< ImageDataTexture2D >();
                 id.texture = texture;
                 return id;

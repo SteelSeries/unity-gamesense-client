@@ -53,7 +53,7 @@ namespace SteelSeries {
             /// </summary>
             /// <param name="packedBinaryImage">Bit vector</param>
             /// <returns>ImageDataBitVector instance</returns>
-            public ImageDataBitVector Create( System.Byte[] packedBinaryImage ) {
+            public static ImageDataBitVector Create( System.Byte[] packedBinaryImage ) {
                 var id = CreateInstance< ImageDataBitVector >();
                 id.data = packedBinaryImage;
                 return id;
@@ -77,7 +77,7 @@ namespace SteelSeries {
             public AbstractImageDataSource imageSource;
             public FrameModifiers frameModifiers;
 
-            public FrameDataImage Create( DeviceZone.SpecificScreen_Zone deviceZone, AbstractImageDataSource imageSource, FrameModifiers frameModifiers ) {
+            public static FrameDataImage Create( DeviceZone.SpecificScreen_Zone deviceZone, AbstractImageDataSource imageSource, FrameModifiers frameModifiers ) {
                 var fd = CreateInstance< FrameDataImage >();
                 fd.deviceZone = deviceZone;
                 fd.imageSource = imageSource;

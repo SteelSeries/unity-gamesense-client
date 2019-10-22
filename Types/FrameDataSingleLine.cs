@@ -37,7 +37,7 @@ namespace SteelSeries {
             public EventIconId iconId;
             public FrameModifiers frameModifiers;
 
-            public FrameDataSingleLine Create( LineData lineData, FrameModifiers frameModifiers, EventIconId iconId = EventIconId.Default ) {
+            public static FrameDataSingleLine Create( LineData lineData, FrameModifiers frameModifiers, EventIconId iconId = EventIconId.Default ) {
                 var fd = CreateInstance< FrameDataSingleLine >();
                 fd.lineData = lineData;
                 fd.frameModifiers = frameModifiers;

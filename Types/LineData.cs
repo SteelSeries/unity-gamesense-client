@@ -165,16 +165,18 @@ namespace SteelSeries {
 
                 }
 
-                switch ( accessor.type ) {
+                if (accessor != null) {
+                    switch (accessor.type) {
 
-                    case LineDataAccessor.Type.FrameKey:
-                        serialized[ "context-frame-key" ] = new FullSerializer.fsData( accessor.value );
-                        break;
-                    
-                    case LineDataAccessor.Type.GoLispExpr:
-                        serialized[ "arg" ] = new FullSerializer.fsData( accessor.value );
-                        break;
+                        case LineDataAccessor.Type.FrameKey:
+                            serialized["context-frame-key"] = new FullSerializer.fsData(accessor.value);
+                            break;
 
+                        case LineDataAccessor.Type.GoLispExpr:
+                            serialized["arg"] = new FullSerializer.fsData(accessor.value);
+                            break;
+
+                    }
                 }
             }
         }
