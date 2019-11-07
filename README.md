@@ -7,7 +7,7 @@ GameSense™ Client for Unity Engine simplifies the process of integrating GameS
 * [Unreal Engine 4 plugin](https://github.com/SteelSeries/gamesense-plugin-ue4)
 
 # Installation
-Simply place the contents of this repository somewhere in your project's Assets directory, preferably inside `Assets\Scripts\GameSense`. The code will also be available from the Unity Asset Store soon.
+Simply place the contents of this repository somewhere in your project's Assets directory, preferably inside `Assets\Scripts\GameSense`. The client is also available on the [Unity Asset Store](https://www.assetstore.unity3d.com/#!/content/58312).
 
 The client relies on the presence of the SteelSeries Engine 3 (aka the GameSense™ server). You can download it from [here](https://steelseries.com/engine).
 
@@ -115,7 +115,6 @@ void Awake() {
 	GSClient.Instance.RegisterGame(
 		"DEMO",             // game name
 		"Unity Demo",       // game display name
-		IconColor.Orange    // icon color
 		);
 
 	// function keys zone on perkey device (such as Apex M800)
@@ -159,6 +158,29 @@ SteelSeries.GameSense.GSClient.Instance.SendEvent("HEALTH", currentHealth);
 ### Tips
 + Remember that you can specify script execution order in your project. Make sure your setup script runs before anything that calls `SendEvent()`
 + If you use the client through script, make sure you do not instantiate `GameSenseManager.prefab` in your scene hierarchy. Also, do not attach any client's scripts to any game objects.
+
+# Preparing Image Data
+GameSense for OLED/LCD allows you to specify bitmaps as sources for frame data. This section details the options available to you to accomplish this.
+
+## Texture Assets
+It is more than likely that freshly imported texture assets will not work out of the box with GameSense for OLED/LCD. To ensure the client is able to process the assets, follow these steps:
+
+1. In project browser, navigate to the directory containing your image files and select those you'd like to use.
+2. In the Inspector, locate and set the following properties to the corresponding values:
+   +  sRGB (Color Texture) = unchecked
+   +  Read/Write Enabled = checked
+   + Generate Mip Maps = unchecked
+   + Compression Settings = _RGBA 32 bit_
+
+3. Click ***Apply***
+
+The texture assets now have the correct format and can be used as image sources for frames data in screen handlers. Simply use `Texture2D Image Data` asset and set the texture property in the inspector or call `ImageDataTexture2D.Create()` from script. For best results, ensure the textures have correct size for the target screen device.
+
+## Bit Vector
+You can supply a byte array where the value of each bit corresponds to a white or black point on the screen as described [here](https://github.com/SteelSeries/gamesense-sdk/blob/master/doc/api/json-handlers-screen.md#showing-raw-bitmaps). It is mandatory for the length of the array to be equal to `ceiling(`_`width`_ `*` _`height`_ `/ 8)`, where _width_ and _height_ are the dimensions of the target screen device. See `ImageDataBitVector` class.
+
+## Subclass of `AbstractImageDataSource`
+You also have an option of making your own image source that suits your specific needs. To do it, create a class that derives from `AbstractImageDataSource` and reimplement `GetData()`. This function is expected to return a byte array as described above. The benefit of this method over the bit vector is that `GetData()` receives a device-zone object which you can use to obtain target device width and height. Please refer to the implementation of `ImageDataTexture2D.GetData()` for an example.
 
 # General Tips
 + Be aware of where you put your `SendEvent()` calls. If you really insist on putting them somewhere inside MonoBehaviour's `Update()` methods, at least guard them with logic to send event updates only when the variables you use for updates change values. Under no circumstance should you spam updates every frame or send redundant data.

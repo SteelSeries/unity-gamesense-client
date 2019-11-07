@@ -26,10 +26,25 @@
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+using System.Collections.Generic;
+
 namespace SteelSeries {
 
     namespace GameSense {
 
+
+        public abstract class Converter< TModel > : FullSerializer.fsDirectConverter< TModel > {
+            protected override FullSerializer.fsResult DoDeserialize( Dictionary< string, FullSerializer.fsData > data, ref TModel model ) {
+                return FullSerializer.fsResult.Fail( "Not implemented" );
+            }
+
+            public override bool RequestInheritanceSupport(System.Type storageType) {
+                return false;
+            }
+        }
+
+
+        [System.Obsolete("This enum is deprecated and will be remove in the following release")]
         public enum IconColor {
             Orange      = 0,
             Gold        = 1,
@@ -63,12 +78,15 @@ namespace SteelSeries {
             Mana        = 14,   // Mana/Potion
             Clock       = 15,   // Clock
             Lightning   = 16,   // Lightning
-            Item        = 17    // Item/Backpack
-        }
-
-
-        [System.Serializable] public struct EventData {
-            public System.Int32 value;
+            Item        = 17,   // Item/Backpack
+            AtSymbol    = 18,
+            Muted       = 19,
+            Talking     = 20,
+            Connect     = 21,
+            Disconnect  = 22,
+            Music       = 23,
+            Play        = 24,
+            Pause       = 25
         }
 
 
@@ -118,16 +136,12 @@ namespace SteelSeries {
         }
 
 
-        class RepeatLimitConverter : FullSerializer.fsDirectConverter< RepeatLimit > {
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref RepeatLimit model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
+        class RepeatLimitConverter : Converter< RepeatLimit > {
+            protected override FullSerializer.fsResult DoSerialize( RepeatLimit model, Dictionary< string, FullSerializer.fsData > serialized ) {
 
-            protected override FullSerializer.fsResult DoSerialize( RepeatLimit model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                // TODO check result of each
-                SerializeMember< System.UInt32 >( serialized, null, "low", model.low );
-                SerializeMember< System.UInt32 >( serialized, null, "high", model.high );
-                SerializeMember< System.UInt32 >( serialized, null, "repeat_limit", model.repeatLimit );
+                SerializeMember( serialized, null, "low", model.low );
+                SerializeMember( serialized, null, "high", model.high );
+                SerializeMember( serialized, null, "repeat_limit", model.repeatLimit );
 
                 return FullSerializer.fsResult.Success;
             }
@@ -173,6 +187,11 @@ namespace SteelSeries {
 
 
             class TactileZone {
+                public const string One = "one";
+            }
+
+
+            class ScreenZone {
                 public const string One = "one";
             }
 
@@ -237,6 +256,45 @@ namespace SteelSeries {
             }
 
 
+            abstract public class AbstractScreenDevice_Zone : AbstractDevice_Zone {
+                public AbstractScreenDevice_Zone( string device ) : base( device ) { }
+            }
+
+            // screen generic
+            public class AbstractGenericScreen_Zone : AbstractScreenDevice_Zone {
+                protected string _zone;
+                public string zone { get { return _zone; } }
+                public AbstractGenericScreen_Zone( string device, string zone ) : base( device ) { _zone = zone; }
+            }
+
+            public class SpecificScreen_Zone : AbstractGenericScreen_Zone {
+                protected uint _width;
+                protected uint _height;
+                public uint width { get { return _width; } }
+                public uint height { get { return _height; } }
+
+                /// <summary>
+                /// Display area of this screen device.
+                /// </summary>
+                /// <returns>Area in pixels</returns>
+                public uint TargetScreenDisplayArea() {
+                    return width * height;
+                }
+
+                /// <summary>
+                /// Buffer size required for this screen device.
+                /// </summary>
+                /// <returns>Buffer size in bytes</returns>
+                public uint TargetScreenBufferSize() {
+                    double area = TargetScreenDisplayArea();
+                    return ( uint )System.Math.Ceiling( area / 8.0 );
+                }
+
+                public SpecificScreen_Zone( System.UInt32 width, System.UInt32 height, string zone ) :
+                    base( string.Format( "screened-{0}x{1}", width, height ), zone ) { _width = width; _height = height; }
+            }
+
+
             // concrete devices
             // TODO
         }
@@ -246,7 +304,13 @@ namespace SteelSeries {
         public abstract class AbstractRate : UnityEngine.ScriptableObject { }
 
 
-        public abstract class AbstractHandler : UnityEngine.ScriptableObject { }
+        public abstract class AbstractHandler : UnityEngine.ScriptableObject {
+            /// <summary>
+            /// Reimplemented in subclasses to carry out any kind of processing.
+            /// This needs to be called from a Monobehaviour script or otherwise on the main thread.
+            /// </summary>
+            public virtual void Preprocess() { }
+        }
 
 
 
@@ -273,7 +337,6 @@ namespace SteelSeries {
         }
 
 
-        // TODO copy constructors
         [System.Serializable] public struct RGB {
             public System.Byte red;
             public System.Byte green;
@@ -304,6 +367,7 @@ namespace SteelSeries {
         public abstract class AbstractColor : UnityEngine.ScriptableObject {
             public abstract ColorEffect ColorEffectType();
         }
+
         public abstract class AbstractColor_Nonrecursive : AbstractColor { }
 
 
@@ -337,17 +401,13 @@ namespace SteelSeries {
         }
 
 
-        class ColorRangeConverter : FullSerializer.fsDirectConverter< ColorRange > {
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref ColorRange model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
+        class ColorRangeConverter : Converter< ColorRange > {
+            protected override FullSerializer.fsResult DoSerialize( ColorRange model, Dictionary< string, FullSerializer.fsData > serialized ) {
 
-            protected override FullSerializer.fsResult DoSerialize( ColorRange model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                // TODO check result of each
-                SerializeMember< System.UInt32 >( serialized, null, "low", model.low );
-                SerializeMember< System.UInt32 >( serialized, null, "high", model.high );
+                SerializeMember( serialized, null, "low", model.low );
+                SerializeMember( serialized, null, "high", model.high );
 
-                SerializeMember< AbstractColor_Nonrecursive >( serialized, null, "color", model.color );
+                SerializeMember( serialized, null, "color", model.color );
 
                 return FullSerializer.fsResult.Success;
             }
@@ -549,50 +609,38 @@ namespace SteelSeries {
         }
 
 
-        class TactileEffectSimpleConverter : FullSerializer.fsDirectConverter< TactileEffectSimple > {
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref TactileEffectSimple model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
+        class TactileEffectSimpleConverter : Converter< TactileEffectSimple > {
+            protected override FullSerializer.fsResult DoSerialize( TactileEffectSimple model, Dictionary< string, FullSerializer.fsData > serialized ) {
 
-            protected override FullSerializer.fsResult DoSerialize( TactileEffectSimple model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                // TODO check result of each
-                SerializeMember< TactileEffectType >( serialized, null, "type", model.type );
-                SerializeMember< System.UInt32 >( serialized, null, "delay-ms", model.delay_ms );
+                SerializeMember( serialized, null, "type", model.type );
+                SerializeMember( serialized, null, "delay-ms", model.delay_ms );
 
                 return FullSerializer.fsResult.Success;
             }
         }
 
 
-        class TactileEffectCustomConverter : FullSerializer.fsDirectConverter< TactileEffectCustom > {
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref TactileEffectCustom model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
+        class TactileEffectCustomConverter : Converter< TactileEffectCustom > {
+            protected override FullSerializer.fsResult DoSerialize( TactileEffectCustom model, Dictionary< string, FullSerializer.fsData > serialized ) {
 
-            protected override FullSerializer.fsResult DoSerialize( TactileEffectCustom model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                // TODO check result of each
-                SerializeMember< string >( serialized, null, "type", TactileEffectCustom.type );
-                SerializeMember< System.UInt32 >( serialized, null, "length-ms", model.length_ms );
-                SerializeMember< System.UInt32 >( serialized, null, "delay-ms", model.delay_ms );
+                SerializeMember( serialized, null, "type", TactileEffectCustom.type );
+                SerializeMember( serialized, null, "length-ms", model.length_ms );
+                SerializeMember( serialized, null, "delay-ms", model.delay_ms );
 
                 return FullSerializer.fsResult.Success;
             }
         }
 
 
-        class TactileEffectRangeConverter : FullSerializer.fsDirectConverter< TactileEffectRange > {
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary<string, FullSerializer.fsData> data, ref TactileEffectRange model ) {
-                return FullSerializer.fsResult.Fail("Not implemented");
-            }
+        class TactileEffectRangeConverter : Converter< TactileEffectRange > {
+            protected override FullSerializer.fsResult DoSerialize( TactileEffectRange model, Dictionary<string, FullSerializer.fsData> serialized ) {
 
-            protected override FullSerializer.fsResult DoSerialize( TactileEffectRange model, System.Collections.Generic.Dictionary<string, FullSerializer.fsData> serialized ) {
-                // TODO check result of each
-                SerializeMember<System.UInt32>( serialized, null, "low", model.low );
-                SerializeMember<System.UInt32>( serialized, null, "high", model.high );
+                SerializeMember( serialized, null, "low", model.low );
+                SerializeMember( serialized, null, "high", model.high );
 
                 switch ( model.TactilePatternType ) {
-                    case TactilePatternType.Simple: SerializeMember< TactileEffectSimple[] >( serialized, null, "pattern", model.pattern_simple.pattern ); break;
-                    case TactilePatternType.Custom: SerializeMember< TactileEffectCustom[] >( serialized, null, "pattern", model.pattern_custom.pattern ); break;
+                    case TactilePatternType.Simple: SerializeMember( serialized, null, "pattern", model.pattern_simple.pattern ); break;
+                    case TactilePatternType.Custom: SerializeMember( serialized, null, "pattern", model.pattern_custom.pattern ); break;
                 }
 
                 return FullSerializer.fsResult.Success;
@@ -606,7 +654,40 @@ namespace SteelSeries {
 
         }
 
-        public abstract class TactilePattern_Nonrecursive: AbstractTactilePattern { }
+        public abstract class TactilePattern_Nonrecursive : AbstractTactilePattern { }
+
+
+
+
+        // ******************** EVENT DATA ********************
+
+        public abstract class AbstractContextFrame { }
+        
+
+
+
+        // ******************** SCREEN DATA ********************
+
+        public enum ScreenMode {
+            screen
+        }
+
+
+        public enum ScreenDataType {
+            Static = 0,
+            Range
+        }
+
+        public abstract class AbstractFrameData : UnityEngine.ScriptableObject {
+            /// <summary>
+            /// Reimplemented in subclasses to carry out any kind of processing.
+            /// This method needs to be called from a Monobehaviour script or otherwise on the main thread.
+            /// </summary>
+            public virtual void Preprocess() { }
+        }
+
+        public abstract class AbstractScreenData : UnityEngine.ScriptableObject { }
+
 
     }
 

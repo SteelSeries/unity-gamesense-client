@@ -1,10 +1,10 @@
-/*
- * TactilePatternSimple.cs
+﻿/*
+ * Screened128x52ZoneOne.cs
  *
- * authors: Tomasz Rybiarczyk (tomasz.rybiarczyk@steelseries.com)
+ * authors: sharkgoesmad
  *
  *
- * Copyright (c) 2016 SteelSeries
+ * Copyright (c) 2019 SteelSeries
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -30,25 +30,14 @@ namespace SteelSeries {
 
     namespace GameSense {
 
-        [UnityEngine.CreateAssetMenu(fileName = "TactilePatternSimple", menuName = "GameSense/Tactile Patterns/Simple")]
-        public class TactilePatternSimple : TactilePattern_Nonrecursive {
+        namespace DeviceZone {
 
-            public TactileEffectSimple[] pattern;
+            [UnityEngine.CreateAssetMenu( fileName = "Screened128x52ZoneOne", menuName = "GameSense/Device - Zone/Screen/Screened 128x52/One" )]
+            public class Screened128x52ZoneOne : SpecificScreen_Zone {
 
-            public override TactilePatternType PatternType() {
-                return TactilePatternType.Simple;
-            }
+                public Screened128x52ZoneOne() : base( 128, 52, ScreenZone.One ) { }
 
-            private static TactilePatternSimple _new() {
-                TactilePatternSimple ps = CreateInstance< TactilePatternSimple >();
-                return ps;
-            }
-
-            public static TactilePatternSimple Create( TactileEffectSimple[] effects ) {
-                TactilePatternSimple ps = _new();
-                ps.pattern = effects;
-                return ps;
-            }
+            };
 
         }
 

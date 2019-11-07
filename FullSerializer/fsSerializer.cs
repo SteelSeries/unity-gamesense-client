@@ -602,7 +602,7 @@ namespace FullSerializer {
             //
             // Note: We allow converters to request that we do *not* add type information.
             if (storageType != instance.GetType() &&
-                GetConverter(storageType, overrideConverterType).RequestInheritanceSupport(storageType)) {
+                GetConverter(instance.GetType(), overrideConverterType).RequestInheritanceSupport(storageType)) {
 
                 // Add the inheritance metadata
                 EnsureDictionary(data);

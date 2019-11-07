@@ -76,13 +76,9 @@ namespace SteelSeries {
         }
 
 
-        class RateRangeConverter : FullSerializer.fsDirectConverter< RateRange > {
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref RateRange model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class RateRangeConverter : Converter< RateRange > {
             protected override FullSerializer.fsResult DoSerialize( RateRange model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                // TODO check result of each
+
                 SerializeMember< Frequency[] >( serialized, null, "frequency", model.frequency );
                 if ( model.repeatLimit != null ) {
                     SerializeMember< RepeatLimit[] >( serialized, null, "repeat_limit", model.repeatLimit );

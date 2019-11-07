@@ -59,7 +59,7 @@ namespace SteelSeries {
 
 
             private static ColorHandler _new() {
-                ColorHandler ch = UnityEngine.ScriptableObject.CreateInstance< ColorHandler >();
+                ColorHandler ch = CreateInstance< ColorHandler >();
                 return ch;
             }
 
@@ -124,17 +124,12 @@ namespace SteelSeries {
                 ch.rate_range = rate;
                 return ch;
             }
-
         }
 
 
-        class ColorHandlerConverter : FullSerializer.fsDirectConverter< ColorHandler > {
-            protected override FullSerializer.fsResult DoDeserialize( System.Collections.Generic.Dictionary< string, FullSerializer.fsData > data, ref ColorHandler model ) {
-                return FullSerializer.fsResult.Fail( "Not implemented" );
-            }
-
+        class ColorHandlerConverter : Converter< ColorHandler > {
             protected override FullSerializer.fsResult DoSerialize( ColorHandler model, System.Collections.Generic.Dictionary< string, FullSerializer.fsData > serialized ) {
-                // TODO check result of each
+
                 SerializeMember< string >( serialized, null, "device-type", model.deviceZone.device );
 
                 if ( model.deviceZone.HasCustomZone() ) {
@@ -155,7 +150,10 @@ namespace SteelSeries {
                     case ColorEffect.Range: SerializeMember< ColorRange[] >( serialized, null, "color", model.color_range.ranges ); break;
                 }
 
-                SerializeMember< AbstractRate >( serialized, null, "rate", model.rate );
+                switch ( model.RateMode ) {
+                    case RateMode.Static: SerializeMember< RateStatic >( serialized, null, "rate", model.rate_static ); break;
+                    case RateMode.Range: SerializeMember< RateRange >( serialized, null, "rate", model.rate_range ); break;
+                }
 
                 return FullSerializer.fsResult.Success;
             }

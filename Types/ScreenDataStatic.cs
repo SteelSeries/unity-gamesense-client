@@ -1,10 +1,10 @@
-/*
- * TactilePatternSimple.cs
+﻿/*
+ * ScreenDataStatic.cs
  *
- * authors: Tomasz Rybiarczyk (tomasz.rybiarczyk@steelseries.com)
+ * authors: sharkgoesmad
  *
  *
- * Copyright (c) 2016 SteelSeries
+ * Copyright (c) 2019 SteelSeries
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -30,26 +30,20 @@ namespace SteelSeries {
 
     namespace GameSense {
 
-        [UnityEngine.CreateAssetMenu(fileName = "TactilePatternSimple", menuName = "GameSense/Tactile Patterns/Simple")]
-        public class TactilePatternSimple : TactilePattern_Nonrecursive {
+        [UnityEngine.CreateAssetMenu(fileName = "ScreenDataStatic", menuName = "GameSense/Screen Data/Static")]
+        [System.Serializable] public class ScreenDataStatic : AbstractScreenData {
+            public AbstractFrameData[] datas;
 
-            public TactileEffectSimple[] pattern;
-
-            public override TactilePatternType PatternType() {
-                return TactilePatternType.Simple;
+            private static ScreenDataStatic _new() {
+                ScreenDataStatic sd = CreateInstance<ScreenDataStatic>();
+                return sd;
             }
 
-            private static TactilePatternSimple _new() {
-                TactilePatternSimple ps = CreateInstance< TactilePatternSimple >();
-                return ps;
+            public static ScreenDataStatic Create( AbstractFrameData[] datas ) {
+                ScreenDataStatic sd = _new();
+                sd.datas = datas;
+                return sd;
             }
-
-            public static TactilePatternSimple Create( TactileEffectSimple[] effects ) {
-                TactilePatternSimple ps = _new();
-                ps.pattern = effects;
-                return ps;
-            }
-
         }
 
     }
