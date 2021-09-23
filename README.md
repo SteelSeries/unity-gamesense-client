@@ -2,6 +2,7 @@
 GameSense™ Client for Unity Engine simplifies the process of integrating GameSense™ in your project. It minimizes the amount of work required to communicate with the GameSense™ server, exposes a simple-to-use API, and provides GUI editor tools.
 
 ## More info
+* [Unity GameSense Example Project](https://github.com/SteelSeries/Unity-GameSense-Project)
 * [GameSense Developer Portal](https://steelseries.com/developer)
 * [GameSense SDK documentation](https://github.com/SteelSeries/gamesense-sdk)
 * [Unreal Engine 4 plugin](https://github.com/SteelSeries/gamesense-plugin-ue4)
