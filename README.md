@@ -7,7 +7,7 @@ GameSense™ Client for Unity Engine simplifies the process of integrating GameS
 * [Unreal Engine 4 plugin](https://github.com/SteelSeries/gamesense-plugin-ue4)
 
 # Installation
-Simply place the contents of this repository somewhere in your project's Assets directory, preferably inside `Assets\Scripts\GameSense`. The client is also available on the [Unity Asset Store](https://www.assetstore.unity3d.com/#!/content/58312).
+Simply place the contents of this repository somewhere in your project's Assets directory, preferably inside `Assets\Scripts\GameSense`.
 
 The client relies on the presence of the SteelSeries Engine 3 (aka the GameSense™ server). You can download it from [here](https://steelseries.com/engine).
 
